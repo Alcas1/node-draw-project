@@ -4,24 +4,26 @@ angular.module('nodedrawApp')
   .controller('MainCtrl', function ($scope, $http, socket) {
     $scope.awesomeThings = [];
 
-    $http.get('/api/things').success(function(awesomeThings) {
+    $http.get('/api/lobbys').success(function(awesomeThings) {
       $scope.awesomeThings = awesomeThings;
-      socket.syncUpdates('thing', $scope.awesomeThings);
+      socket.syncUpdates('lobby', $scope.awesomeThings);
     });
 
-    $scope.addThing = function() {
-      if($scope.newThing === '') {
+    $scope.addLobby = function() {
+      if($scope.lobbyName === '') {
         return;
       }
-      $http.post('/api/things', { name: $scope.newThing });
-      $scope.newThing = '';
+      $http.post('/api/lobbys', { name: $scope.lobbyName });
+      $scope.lobbyName = '';
+      $scope.lobbyPlayerNum = '';
+      $scope.code = '';
     };
 
     $scope.deleteThing = function(thing) {
-      $http.delete('/api/things/' + thing._id);
+      $http.delete('/api/lobbys/' + thing._id);
     };
 
     $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('thing');
+      socket.unsyncUpdates('lobby');
     });
   });
