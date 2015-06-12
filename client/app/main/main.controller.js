@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('nodedrawApp')
-  .controller('MainCtrl', function ($scope, $http, socket) {
+  .controller('MainCtrl', function ($scope, $http, $location, socket) {
     $scope.awesomeThings = [];
 
     $http.get('/api/lobbys').success(function(awesomeThings) {
@@ -9,7 +9,7 @@ angular.module('nodedrawApp')
       socket.syncUpdates('lobby', $scope.awesomeThings);
     });
 
-    $scope.addLobby = function() {
+    $scope.createLobby = function() {
       if($scope.lobbyName === '') {
         return;
       }
@@ -17,7 +17,9 @@ angular.module('nodedrawApp')
       $scope.lobbyName = '';
       $scope.lobbyPlayerNum = '';
       $scope.code = '';
+      $location.path('/game');
     };
+
 
     $scope.deleteThing = function(thing) {
       $http.delete('/api/lobbys/' + thing._id);

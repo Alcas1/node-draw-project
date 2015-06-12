@@ -8,14 +8,15 @@ header#banner.hero-unit
   
 
 
-  form.lobby-form
+  form.lobby-form(ng-submit='createLobby()')
     label LOBBY
     p.input-group
+      label Name
       input.form-control(type='text', placeholder='Name', ng-model='lobbyName' required)
       input.form-control(type='text', placeholder='Players(Max 4)', ng-model='lobbyPlayerNum' required)
       input.form-control(type='text', placeholder='Code', ng-model='code' required)
       .input-group-btn
-        button.btn.btn-primary(type='submit', ng-click='addLobby()') Create Lobby
+        button.btn.btn-primary(type='submit') Create Lobby
 
 footer.footer
   .container
