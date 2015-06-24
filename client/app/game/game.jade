@@ -1,1 +1,6 @@
 div(ng-include='"components/navbar/navbar.html"')
+p Lobby:{{lobbyName}}
+p Players
+ul.list-group
+	li.list-group-item(ng-repeat="player in players")
+		{{player.userName}}

@@ -1,34 +1,49 @@
 'use strict';
 
 angular.module('nodedrawApp')
-  .controller('GameCtrl', function ($scope, Auth, $location) {
-    $scope.user = {};
-    $scope.errors = {};
+.controller('GameCtrl', function ($scope, $http, $location, Auth,User) {
+	var socketio = io('', {
+		path: '/socket.io-client'
+	});
+	var lobbyName="Lobby";
+	var curLobby;
+	$scope.players=[];
+	socketio.emit('getRoom');
+	console.log("GameCtrl");
+	socketio.on('updateRoom',function(lobby){
+		curLobby=lobby;
+		$scope.lobbyName=lobby.name;
+		$scope.players=lobby.users;
+		$scope.$apply();
+		curLobby=lobby;
+	});
+	socketio.on('lobbyName',function(lobby){
+		$scope.lobbyName=lobby;
+		$scope.$apply();
+		curLobby=lobby;
+	});
+	socketio.on('connect', function(){
+		if(Auth.isLoggedIn())
+		{
+			$scope.getCurrentUser=User.get();
+			$scope.getCurrentUser.$promise.then(function(data) {
+				socketio.emit('updateUser',data);
+			});
+		}
+		else{
+			var curUser ={
+				name: "Guest "+socketio.id.substring(0,8),
+				email: "",
+				role: "user",
+				tempScore:0,
+				totalScore:0,
+				provider: "local",
+			};
+			socketio.emit('updateUser',curUser);
+		}
 
-    $scope.register = function(form) {
-      $scope.submitted = true;
+	});
+  	//$scope.getCurrentUser=User.get();
 
-      if(form.$valid) {
-        Auth.createUser({
-          name: $scope.user.name,
-          email: $scope.user.email,
-          password: $scope.user.password
-        })
-        .then( function() {
-          // Account created, redirect to home
-          $location.path('/');
-        })
-        .catch( function(err) {
-          err = err.data;
-          $scope.errors = {};
-
-          // Update validity of form fields that match the mongoose errors
-          angular.forEach(err.errors, function(error, field) {
-            form[field].$setValidity('mongoose', false);
-            $scope.errors[field] = error.message;
-          });
-        });
-      }
-    };
-
+  	console.log(socketio.id);
   });

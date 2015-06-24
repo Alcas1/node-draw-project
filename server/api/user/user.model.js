@@ -11,6 +11,8 @@ var UserSchema = new Schema({
     type: String,
     default: 'user'
   },
+  tempScore:Number,
+  totalScore:Number,
   hashedPassword: String,
   provider: String,
   salt: String

@@ -6,7 +6,16 @@ var mongoose = require('mongoose'),
 var LobbySchema = new Schema({
   name: String,
   players: Number,
-  playerList:{}
+  code:Number,
+  playerList:[{
+	pName:String,
+  	pID:Number,
+  	pTempScore:Number,
+  	
+
+  }]
+  	
+  
 });
 
 module.exports = mongoose.model('Lobby', LobbySchema);

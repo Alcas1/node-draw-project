@@ -1,0 +1,6 @@
+div(ng-include='"components/navbar/navbar.html"')
+.container
+	div.lobbyList
+		ul.list-group
+			li.list-group-item(ng-repeat="lobby in lobbies" ng-click="goToLobby(lobby)")
+				{{lobby.name}}

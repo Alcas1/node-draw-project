@@ -1,31 +1,79 @@
 'use strict';
 
 angular.module('nodedrawApp')
-  .controller('MainCtrl', function ($scope, $http, $location, socket) {
-    $scope.awesomeThings = [];
+.controller('MainCtrl', function ($scope, $http, $location, socket, Auth, User) {
+  var socketio = io('', {
+    path: '/socket.io-client'
+  });
+  $scope.allLobbies = [];
+  
 
-    $http.get('/api/lobbys').success(function(awesomeThings) {
-      $scope.awesomeThings = awesomeThings;
-      socket.syncUpdates('lobby', $scope.awesomeThings);
-    });
 
-    $scope.createLobby = function() {
-      if($scope.lobbyName === '') {
-        return;
-      }
-      $http.post('/api/lobbys', { name: $scope.lobbyName });
+  
+  $scope.createLobby = function(form) {
+    $scope.submitted = true;
+    if($scope.lobbyName === '') {
+      return;
+    }
+    if(form.$valid) {
+      socketio.emit('leave');
+      socketio.emit('getRoom');
+      socketio.emit('createLobby', {lobbyName:$scope.lobbyName,lobbyPlayerNum:$scope.lobbyPlayerNum,code:$scope.code});
+      socketio.emit('getRoom');
       $scope.lobbyName = '';
       $scope.lobbyPlayerNum = '';
       $scope.code = '';
       $location.path('/game');
-    };
+    }
+    console.log('invalid form');
+
+  };
 
 
-    $scope.deleteThing = function(thing) {
-      $http.delete('/api/lobbys/' + thing._id);
-    };
 
-    $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('lobby');
-    });
+
+
+  $scope.findLobby = function(){
+    $location.path('/lobbies');
+  };
+
+  $scope.deleteThing = function(thing) {
+    $http.delete('/api/lobbys/' + thing._id);
+  };
+
+  $scope.$on('$destroy', function () {
+    socket.unsyncUpdates('lobby');
   });
+
+  socketio.on('connect', function(){
+    if(Auth.isLoggedIn())
+    {
+      $scope.getCurrentUser=User.get();
+      $scope.getCurrentUser.$promise.then(function(data) {
+        socketio.emit('updateUser',data);
+      });
+    }
+    else{
+      var curUser ={
+        name: "Guest "+socketio.id.substring(0,8),
+        email: "",
+        role: "user",
+        tempScore:0,
+        totalScore:0,
+        provider: "local",
+      };
+      socketio.emit('updateUser',curUser);
+    }
+
+  });
+  socketio.on('userCountChange', function(numUsers){
+    $scope.numUsers="Players Online Now: "+numUsers;
+    $scope.$apply();
+  });
+  window.onbeforeunload = function() {
+    socketio.onclose = function () {}; // disable onclose handler first
+    socketio.close()
+  };
+
+
+});

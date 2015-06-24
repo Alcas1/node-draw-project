@@ -22,9 +22,11 @@ exports.index = function(req, res) {
 
 // Get a single lobby
 exports.show = function(req, res) {
-  lobby.findById(req.params.id, function (err, lobby) {
+  lobby.find({name:req.params.id}, function (err, lobby) {
     if(err) { return handleError(res, err); }
     if(!lobby) { return res.send(404); }
+    console.log(lobby);
+        //console.log(json.name);
     return res.json(lobby);
   });
 };

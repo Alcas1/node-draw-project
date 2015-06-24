@@ -5,7 +5,7 @@
 module.exports = {
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://localhost/nodedraw-dev'
+    uri: 'mongodb://localhost/data'
   },
 
   seedDB: true
