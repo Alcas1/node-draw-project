@@ -55,17 +55,22 @@ width: 180px;
 }
 
 .listItemTitle{
-	position:relative;
-	float: left;
+	position:absolute;
+	top:5px;
+	left:10px;
+	/*clear:left;*/
 }
 .listItemPlayers{
-	position:relative;
-	float:right;
+	position:absolute;
+	top:5px;
+	right:10px;
+	/*clear:right;*/
 }
 
 
 
 .list-group-item:first-child {
+	height:102px;
 	border-radius:0px;
 	border-top-width: 3px;
 }
@@ -80,7 +85,26 @@ width: 180px;
 	color:#fff;
 	min-height: 100px;
 	border-color: #4C4C4C;
-	border-left:0px;
+	padding:0;
+	border-left-width:0px;
+	border-left-color: red;
 	border-right:0px;
 }
 
+.listItemContainer{
+	/*display: inline-block;*/
+	/*margin:10px 15px;*/
+}
+
+.roomStatus{
+
+	height:100px;
+	width:3px;
+	position:absolute;
+}
+.roomStatus{
+
+	height:98px;
+	width:3px;
+	position:absolute;
+}

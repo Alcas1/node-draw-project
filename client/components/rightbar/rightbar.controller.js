@@ -43,9 +43,6 @@ angular.module('nodedrawApp')
 
   }
 
-    
-
-
 
   
   $scope.goToLobby = function(lobby){

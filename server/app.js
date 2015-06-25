@@ -40,6 +40,8 @@ function lobby(name,code,players) {
 	this.minPlayers=2;
 	this.maxPlayers=players;
 	this.users=[];
+	this.category;
+	this.status;
 }
 var lobbies = [];
 var connected=false;
@@ -82,6 +84,18 @@ var updateLobby=function(socket)
 				{
 					toPush.push({userId:users[i].id,userName:users[i].user.name});
 				}
+			}
+			if(curLobby.users.length===curLobby.maxPlayers)
+			{
+				curLobby.status='#f44336';
+			}
+			else if(!(curLobby.code===''||!curLobby.code)){
+				curLobby.status='#ffc107';
+				console.log(curLobby.code);
+			}
+			else
+			{
+				curLobby.status='#4caf50';
 			}
 			curLobby.users=toPush;
 			socketio.to(room).emit('updateRoom',curLobby);
