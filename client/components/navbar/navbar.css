@@ -33,3 +33,17 @@ div.navbar.navbar-default.navbar-fixed-top {
     background-color: #e64a19;
 
 }
+.navbar-collapse{
+    border-top-width: 0px;
+}
+
+
+.navbar .navbar-toggle,.navbar .navbar-toggle:hover {
+    background-color: #E64A19;
+    border-width: 0px;
+    border-radius: 3px;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #fff;
+}

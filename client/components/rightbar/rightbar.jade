@@ -1,0 +1,18 @@
+.rightbar(ng-controller='RightbarCtrl')
+	p
+	p(align='center') {{listName}}
+	input.searchbox(type="search" ng-model="search" placeholder="Search..." ng-show='state===0')
+	div.lobbyList
+		ul.list-group
+			li.list-group-item(ng-repeat="listItem in listItems| filter:filterBySearch" ng-click="goToLobby(listItem)" ng-show='state===0')
+				
+				.listItemTitle
+					{{listItem.name}}
+				.listItemPlayers
+					{{listItem.users.length}}/{{listItem.maxPlayers}}
+
+
+
+			li.list-group-item(ng-repeat="listItem in listItems" ng-show='state===1')
+				{{listItem.userName}}
+	

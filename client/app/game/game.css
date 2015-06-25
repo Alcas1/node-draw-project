@@ -1,0 +1,5 @@
+.game-container{
+    width: -moz-calc(100% - 200px);
+    width: -webkit-calc(100% - 200px);
+    width: calc(100% - 200px);
+}

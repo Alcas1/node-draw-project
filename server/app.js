@@ -134,7 +134,7 @@ socketio.sockets.on('connection', function(socket) {
 			}
 			nLobby.users=toPush;
 			console.log(toPush);
-			lobbies.push(nLobby);
+			lobbies.unshift(nLobby);
 
 		}
 

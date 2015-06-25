@@ -7,7 +7,7 @@ angular.module('nodedrawApp')
   });
   $scope.lobbies = [];
   $scope.errors={};
-
+  $scope.numUsers='Players Online Now:  ';
   socketio.emit('getLobbyList',true);
   socketio.on('updateLobbyList',function(nLobbies){
     $scope.lobbies=nLobbies;
@@ -39,10 +39,6 @@ angular.module('nodedrawApp')
     //console.log('invalid form');
 
   };
-
-
-
-
 
   $scope.findLobby = function(){
     $location.path('/lobbies');

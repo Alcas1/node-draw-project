@@ -1,0 +1,86 @@
+.rightbar{
+	background-color: #333333;
+	color:#fff;
+	position:fixed;
+	overflow-y: auto;
+	top:48px;
+	right:0px;
+	z-index: 1000;
+	width:200px;
+	height:100%;
+	box-shadow: 0px 2px 2px rgba(43, 59, 93, 0.29);
+	border-radius: 2px;
+}
+
+/*.searchbox{
+	width:100%;
+	background-color: #1A1A1A;
+	position:relative;
+	background-clip: border-box;
+	border-radius: 20px;
+}*/
+
+.searchbox{
+	
+background-color: #1A1A1A;
+border-radius: 12px;
+border-bottom-style: none;
+border-bottom-width: 0px;
+border-left-style: none;
+border-left-width: 0px;
+border-right-color: #999;
+border-right-style: none;
+border-right-width: 0px;
+border-top-color: #999;
+border-top-style: none;
+border-top-width: 0px;
+box-shadow: transparent 0px 0px 0px 1px, transparent 0px 0px 0px 2px;
+color: #999;
+font-size: 12px;
+font-size-adjust: none;
+font-stretch: normal;
+height: 24px;
+line-height: 15px;
+padding-left: 26px;
+margin-left:10px;
+margin-bottom: 10px;
+text-rendering: optimizelegibility;
+transition-delay: 0s;
+transition-duration: 0.3s;
+transition-property: all;
+transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+width: 180px;
+
+
+}
+
+.listItemTitle{
+	position:relative;
+	float: left;
+}
+.listItemPlayers{
+	position:relative;
+	float:right;
+}
+
+
+
+.list-group-item:first-child {
+	border-radius:0px;
+	border-top-width: 3px;
+}
+
+.list-group-item:last-child{
+	border-radius: :0px;
+}
+
+
+.list-group-item{
+	background-color: #333333;
+	color:#fff;
+	min-height: 100px;
+	border-color: #4C4C4C;
+	border-left:0px;
+	border-right:0px;
+}
+

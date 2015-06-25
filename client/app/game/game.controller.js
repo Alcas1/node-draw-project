@@ -5,23 +5,9 @@ angular.module('nodedrawApp')
 	var socketio = io('', {
 		path: '/socket.io-client'
 	});
-	var lobbyName="Lobby";
-	var curLobby;
-	$scope.players=[];
-	socketio.emit('getRoom');
-	console.log("GameCtrl");
-	socketio.on('updateRoom',function(lobby){
-		curLobby=lobby;
-		$scope.lobbyName=lobby.name;
-		$scope.players=lobby.users;
-		$scope.$apply();
-		curLobby=lobby;
-	});
-	socketio.on('lobbyName',function(lobby){
-		$scope.lobbyName=lobby;
-		$scope.$apply();
-		curLobby=lobby;
-	});
+	
+	console.log($scope.state);
+
 	socketio.on('connect', function(){
 		if(Auth.isLoggedIn())
 		{
@@ -45,5 +31,4 @@ angular.module('nodedrawApp')
 	});
   	//$scope.getCurrentUser=User.get();
 
-  	console.log(socketio.id);
   });

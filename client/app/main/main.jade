@@ -1,30 +1,28 @@
 div(ng-include='"components/navbar/navbar.html"')
-
-header#banner.hero-unit(ng-controller='MainCtrl')
+div(ng-include='"components/rightbar/rightbar.html"')
+.lobby-container
+  header#banner.hero-unit
+    .container
+      .title
+        p.lead PokeDraw Demo
+      .players
+        p {{numUsers}}
   .container
-    .title
-      p.lead PokeDraw Demo
-    .players
-      p {{numUsers}}
-.container
-
-
-
-  form.lobby-form(ng-submit='createLobby(lobbyform)' name='lobbyform')
-    label(style='center') LOBBY
-    p.input-group
-      label Name
-      input.form-control(type='text' name='lobbyName' placeholder='Name' ng-model='lobbyName' ng-maxlength='20' required)
-      input.form-control(type='number' name='lobbyPlayerNum' placeholder='Players(Max 4)' ng-model='lobbyPlayerNum' ng-pattern='/^[1-4]+$/' ng-maxlength='1' required)
-      input.form-control(type='text' placeholder='Code' ng-model='code')
-      .input-group-btn
-        button.btn.btn-primary(type='submit') Create Lobby
-      p.error(ng-show='((lobbyform.lobbyPlayerNum.$error.pattern||lobbyform.lobbyPlayerNum.$error.maxlength))') Invalid Player Number
-      p.error(ng-show='(lobbyform.lobbyName.$error.maxlength)') Shorter Lobby Name
-      p.error {{errors.other}}
-  .input-group-btn
-    button.btn.btn-primary(ng-click='findLobby()') Find Lobby
-
+    form.lobby-form(ng-submit='createLobby(lobbyform)' name='lobbyform')
+      label(style='center') LOBBY
+      p.input-group
+        label Name
+        input.form-control(type='text' name='lobbyName' placeholder='Name' ng-model='lobbyName' ng-maxlength='20' required)
+        input.form-control(type='number' name='lobbyPlayerNum' placeholder='Players(Max 4)' ng-model='lobbyPlayerNum' ng-pattern='/^[1-4]+$/' ng-maxlength='1' required)
+        input.form-control(type='text' placeholder='Code' ng-model='code')
+        .input-group-btn
+          button.btn.btn-primary(type='submit') Create Lobby
+        p.error(ng-show='((lobbyform.lobbyPlayerNum.$error.pattern||lobbyform.lobbyPlayerNum.$error.maxlength))') Invalid Player Number
+        p.error(ng-show='(lobbyform.lobbyName.$error.maxlength)') Shorter Lobby Name
+        p.error {{errors.other}}
+    //- .input-group-btn
+    //-  button.btn.btn-primary(ng-click='findLobby()') Find Lobby
+    form.lobby-form
 
 
 //- footer.footer
