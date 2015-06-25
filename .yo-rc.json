@@ -13,7 +13,7 @@
       "jade": true,
       "css": true,
       "uirouter": true,
-      "bootstrap": true,
+      "bootstrap-material-design": true,
       "uibootstrap": true,
       "socketio": true,
       "mongoose": true,

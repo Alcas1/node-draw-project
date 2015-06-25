@@ -1,0 +1,35 @@
+div.navbar.navbar-default.navbar-fixed-top {
+	background-color: #ff5722;
+	box-shadow: 0px 3px 2px rgba(43, 59, 93, 0.29);
+	border-bottom-width: 0px;
+}
+.navbar-default .navbar-brand{
+	color:#ffffff;
+}
+.navbar-default .navbar-nav > li > a {
+    color: #ffffff;
+}
+.navbar-default .navbar-nav > li > a:focus {
+    color: #ffffff;
+    cursor: pointer;
+}
+.navbar-default .navbar-nav > li > a:hover {
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.navbar-default .navbar-brand:focus {
+    color: #ffffff;
+    background-color: transparent;
+    cursor: pointer;
+}
+.navbar-default .navbar-brand:hover {
+    color: #ffffff;
+    background-color: transparent;
+    cursor: pointer;
+}
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+    color: #fff;
+    background-color: #e64a19;
+
+}

@@ -1,4 +1,4 @@
-div.navbar.navbar-default.navbar-static-top(ng-controller='NavbarCtrl')
+div.navbar.navbar-default.navbar-fixed-top(ng-controller='NavbarCtrl')
   div.container
     div.navbar-header
       button.navbar-toggle(type='button', ng-click='isCollapsed = !isCollapsed')
@@ -32,3 +32,4 @@ div.navbar.navbar-default.navbar-static-top(ng-controller='NavbarCtrl')
 
         li(ng-show='isLoggedIn()', ng-class='{active: isActive("/logout")}')
           a(href='', ng-click='logout()') Logout
+div.navbar.navbar-default.navbar-static-top(ng-controller='NavbarCtrl')

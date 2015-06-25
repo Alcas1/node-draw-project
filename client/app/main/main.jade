@@ -14,37 +14,22 @@ header#banner.hero-unit(ng-controller='MainCtrl')
     label(style='center') LOBBY
     p.input-group
       label Name
-      input.form-control(type='text' placeholder='Name' ng-model='lobbyName' required)
-      input.form-control(type='number' name='lobbyPlayerNum' placeholder='Players(Max 4)' ng-model='lobbyPlayerNum' ng-minlength='1' ng-maxlength='1' required)
+      input.form-control(type='text' name='lobbyName' placeholder='Name' ng-model='lobbyName' ng-maxlength='20' required)
+      input.form-control(type='number' name='lobbyPlayerNum' placeholder='Players(Max 4)' ng-model='lobbyPlayerNum' ng-pattern='/^[1-4]+$/' ng-maxlength='1' required)
       input.form-control(type='text' placeholder='Code' ng-model='code')
       .input-group-btn
         button.btn.btn-primary(type='submit') Create Lobby
-      p(ng-show='lobbyform.lobbyPlayerNum.$error && submitted') Invalid Player Number
+      p.error(ng-show='((lobbyform.lobbyPlayerNum.$error.pattern||lobbyform.lobbyPlayerNum.$error.maxlength))') Invalid Player Number
+      p.error(ng-show='(lobbyform.lobbyName.$error.maxlength)') Shorter Lobby Name
+      p.error {{errors.other}}
   .input-group-btn
     button.btn.btn-primary(ng-click='findLobby()') Find Lobby
-  
-
-  //- form(name='myForm')
-  //-     label
-  //-       | User name:
-  //-       input(type='text', name='userName', ng-model='user.name', required='')
-  //-     div(role='alert')
-  //-       span.error(ng-show='myForm.userName.$error.required')
-  //-         | Required!
-  //-     label
-  //-       | Last name:
-  //-       input(type='text', name='lastName', ng-model='user.last', ng-minlength='3', ng-maxlength='10')
-  //-     div(role='alert')
-  //-       span.error(ng-show='myForm.lastName.$error.minlength')
-  //-         | Too short!
-  //-       span.error(ng-show='myForm.lastName.$error.maxlength')
-  //-         | Too long!
 
 
 
-footer.footer
-  .container
-    p
+//- footer.footer
+//-   .container
+//-     p
       //- | Angular Fullstack v2.0.13
       //- = ' | '
       //- a(href='https://twitter.com/tyhenkel') @tyhenkel

@@ -5,17 +5,28 @@ angular.module('nodedrawApp')
   var socketio = io('', {
     path: '/socket.io-client'
   });
-  $scope.allLobbies = [];
-  
+  $scope.lobbies = [];
+  $scope.errors={};
 
-
+  socketio.emit('getLobbyList',true);
+  socketio.on('updateLobbyList',function(nLobbies){
+    $scope.lobbies=nLobbies;
+    $scope.$apply();
+  });
   
   $scope.createLobby = function(form) {
     $scope.submitted = true;
-    if($scope.lobbyName === '') {
-      return;
-    }
     if(form.$valid) {
+      var isCreated=false;
+      for(var i=0;i<$scope.lobbies.length;i++)
+      {
+        if(($scope.lobbyName)===($scope.lobbies[i].name))
+         { 
+          $scope.errors.other='A Lobby with that name has already been created!'
+          return;
+         }
+      }
+
       socketio.emit('leave');
       socketio.emit('getRoom');
       socketio.emit('createLobby', {lobbyName:$scope.lobbyName,lobbyPlayerNum:$scope.lobbyPlayerNum,code:$scope.code});
@@ -25,7 +36,7 @@ angular.module('nodedrawApp')
       $scope.code = '';
       $location.path('/game');
     }
-    console.log('invalid form');
+    //console.log('invalid form');
 
   };
 

@@ -6,8 +6,14 @@
 
 }
 
+.btn-primary{
+    background-color: #00BCD4;
+    border-color:#00BCD4;
+}
 
-
+.error{
+    color:red;
+}
 
 .title{
     margin-top: 12px;
@@ -32,7 +38,7 @@ p.input-group input.form-control{
 
 #banner {
     border-bottom: none;
-    margin-top: -20px;
+    margin-top: -18px;
 }
 
 #banner h1 {
@@ -42,12 +48,13 @@ p.input-group input.form-control{
 }
 
 .hero-unit {
+
     position: relative;
     padding: 0px 15px;
-    color: #F5F5F5;
+    color: #000000;
     text-align: center;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
-    background: #ff5722;
+    background: #ffffff;
 }
 
 .footer {
