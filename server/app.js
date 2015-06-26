@@ -36,12 +36,13 @@ var numUsers=0;
 function lobby(name,code,players) {
 	this.name=name;
 	this.code=code;
-	this.players;
 	this.minPlayers=2;
 	this.maxPlayers=players;
 	this.users=[];
+	this.usersInGame=[];
 	this.category;
 	this.status;
+	this.statusName;
 }
 var lobbies = [];
 var connected=false;
@@ -89,14 +90,16 @@ var updateLobby=function(socket)
 			if(curLobby.users.length===curLobby.maxPlayers)
 			{
 				curLobby.status='#f44336';
-
+				curLobby.statusName='Lobby Full!';
 			}
 			else if(!(curLobby.code===''||!curLobby.code)){
 				curLobby.status='#ffc107';
+				curLobby.statusName='Private Lobby';
 			}
 			else
 			{
 				curLobby.status='#4caf50';
+				curLobby.statusName='Public Lobby';
 			}
 			socketio.to(room).emit('updateRoom',curLobby);
 		}
@@ -107,23 +110,27 @@ var updateLobby=function(socket)
 socketio.sockets.on('connection', function(socket) {
 	if(!connected)
 	{
-		setInterval(function()
-		{
-			socketio.sockets.emit('updateLobbyList',lobbies);
-			console.log("Total Lobbies on Server: "+lobbies.length)
-		}, 3000);
-		setInterval(function()
-		{
-			socketio.sockets.emit('userCountChange',numUsers);
-		}, 1000);
+		// setInterval(function()
+		// {
+		// 	socketio.sockets.emit('updateLobbyList',lobbies);
+		// 	console.log("Total Lobbies on Server: "+lobbies.length)
+		// }, 3000);
+		// setInterval(function()
+		// {
+		// 	socketio.sockets.emit('userCountChange',numUsers);
+		// }, 1000);
 		connected=true;
 	}	
 
+	socket.on('getUserNum',function(){
+		socketio.sockets.emit('userCountChange',numUsers);
+	});
 
 	console.log("Total Users on Server: "+(++numUsers));
 	socket.on('getLobbyList',function(){
 		socketio.sockets.emit('updateLobbyList',lobbies);
 	});
+
 	socketio.sockets.emit('userCountChange',numUsers);
 	socket.on('createLobby',function(newLobby)
 	{

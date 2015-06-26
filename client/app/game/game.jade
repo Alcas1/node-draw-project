@@ -1,9 +1,11 @@
 div(ng-include='"components/navbar/navbar.html"')
 div(ng-include='"components/rightbar/rightbar.html"')
 
-.game-container
-	p Lobby:{{lobbyName}}
-	p Players
+.container
+	.game-container
+		.lobby-title
+			|{{lobby.name}}
+	
 //- ul.list-group
 //- 	li.list-group-item(ng-repeat="player in players")
 //- 		{{player.userName}}

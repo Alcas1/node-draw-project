@@ -4,16 +4,19 @@
 	input.searchbox(type="search" ng-model="search" placeholder="Search..." ng-show='state===0')
 	div.lobbyList
 		ul.list-group
-			li.list-group-item(ng-repeat="listItem in listItems| filter:filterBySearch" ng-click="goToLobby(listItem)" ng-show='state===0')
+			li.list-group-item(ng-repeat="listItem in listItems| filter:filterBySearch" ng-click="goToLobby(listItem)" ng-show='state===0' ng-mouseenter="onHover = 'fadeIn'" ng-mouseleave="onHover = 'fadeOut'")
 				.listItemContainer
 					.roomStatus(ng-style="{'background-color' : listItem.status}")
 					.listItemTitle
 						{{listItem.name}}
 					.listItemPlayers
 						{{listItem.users.length}}/{{listItem.maxPlayers}}
-
+					div(ng-class='onHover' ng-show="onHover==='fadeIn'")
+						p {{listItem.statusName}}
 
 
 			li.list-group-item(ng-repeat="listItem in listItems" ng-show='state===1')
-				{{listItem.userName}}
+				.playerName
+					{{listItem.userName}}
+				.roomStatus(ng-style="{'background-color' : listItem.status}")
 	

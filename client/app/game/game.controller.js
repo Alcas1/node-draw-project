@@ -6,7 +6,13 @@ angular.module('nodedrawApp')
 		path: '/socket.io-client'
 	});
 	
-	console.log($scope.state);
+	var curLobby;
+	socketio.emit('getRoom');
+	socketio.on('updateRoom',function(nLobby){
+		$scope.lobby=nLobby;
+		$scope.$apply();
+		curLobby=nLobby;
+	});
 
 	socketio.on('connect', function(){
 		if(Auth.isLoggedIn())

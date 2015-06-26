@@ -7,7 +7,8 @@ angular.module('nodedrawApp')
   });
   $scope.lobbies = [];
   $scope.errors={};
-  $scope.numUsers='Players Online Now:  ';
+  //$scope.numUsers='Players Online Now:  ';
+  socketio.emit('getUserNum');
   socketio.emit('getLobbyList',true);
   socketio.on('updateLobbyList',function(nLobbies){
     $scope.lobbies=nLobbies;

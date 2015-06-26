@@ -85,7 +85,30 @@
 	border-left-color: red;
 	border-right:0px;
 	cursor: pointer;
+	color: rgba(255, 255, 255, 1);
 }
+
+.list-group-item:hover{
+	color: rgba(255, 255, 255, .3);
+}
+
+.fadeIn{
+	text-align: center;
+	padding-top: 30px;
+	color: rgba(255, 255, 255, 1);
+}
+
+.fadeOut{
+	text-align: center;
+	padding-top: 30px;
+	color: rgba(255, 255, 255, 0);
+}
+
+.playerName{
+	padding-top: 5px;
+	text-align: center;
+}
+
 
 .listItemContainer{
 	/*display: inline-block;*/

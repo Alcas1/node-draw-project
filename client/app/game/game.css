@@ -1,5 +1,17 @@
 .game-container{
-    width: -moz-calc(100% - 200px);
-    width: -webkit-calc(100% - 200px);
-    width: calc(100% - 200px);
+    width: -moz-calc(95% - 200px);
+    width: -webkit-calc(95% - 200px);
+    width: calc(95% - 200px);
+    height:83%;
+    position: absolute;
+    box-shadow: 0px 2px 2px rgba(43, 59, 93, 0.29);
+    background-color: #fff;
+}
+
+.container{
+	
+}
+
+.lobby-title{
+	
 }
