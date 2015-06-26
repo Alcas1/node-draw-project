@@ -28,12 +28,15 @@ angular.module('nodedrawApp')
     $location.path('/login');
   };
 
-  $scope.isActive = function(route) {
-    if(route==='/')
+  $scope.checkLeave = function(item){
+    if(item.title==='Home')
     {
       socketio.emit('leave');
       socketio.emit('getRoom');
     }
+  }
+
+  $scope.isActive = function(route) {
     return route === $location.path();
   };
 });

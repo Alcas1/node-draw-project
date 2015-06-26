@@ -11,7 +11,7 @@ div.navbar.navbar-default.navbar-fixed-top(ng-controller='NavbarCtrl')
     div#navbar-main.navbar-collapse.collapse(collapse='isCollapsed')
       ul.nav.navbar-nav
         li(ng-repeat='item in menu', ng-class='{active: isActive(item.link)}')
-          a(ng-href='{{item.link}}') {{item.title}}
+          a(ng-href='{{item.link}}' ng-click='checkLeave(item)') {{item.title}}
 
         li(ng-show='isAdmin()', ng-class='{active: isActive("/admin")}')
           a(href='/admin') Admin

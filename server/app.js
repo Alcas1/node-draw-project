@@ -109,7 +109,7 @@ socketio.sockets.on('connection', function(socket) {
 		{
 			socketio.sockets.emit('updateLobbyList',lobbies);
 			console.log("Total Lobbies on Server: "+lobbies.length)
-		}, 5000);
+		}, 3000);
 		setInterval(function()
 		{
 			socketio.sockets.emit('userCountChange',numUsers);

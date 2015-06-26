@@ -43,8 +43,13 @@ div.navbar.navbar-default.navbar-fixed-top {
     border-top-width: 0px;
 }
 
+.navbar-default .navbar-text{
+    color:#fff;
+}
+
 .navbar .navbar-toggle,.navbar .navbar-toggle:hover{
     background-color: #E64A19;
+    color:#fff;
     border-width: 0px;
     border-radius: 3px;
 }
