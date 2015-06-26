@@ -10,10 +10,19 @@ angular.module('nodedrawApp')
 	socketio.emit('getRoom');
 	socketio.on('updateRoom',function(nLobby){
 		$scope.lobby=nLobby;
+		console.log(socketio.id);
+		if(socketio.id===nLobby.adminId)
+		{
+			$scope.Ready='Start';
+		}
+		else
+		{
+			$scope.Ready='Ready';
+		}
 		$scope.$apply();
 		curLobby=nLobby;
-	});
 
+	});
 	socketio.on('connect', function(){
 		if(Auth.isLoggedIn())
 		{
@@ -35,6 +44,11 @@ angular.module('nodedrawApp')
 		}
 
 	});
+
+
+	$scope.playerReady=function(){
+
+	}
   	//$scope.getCurrentUser=User.get();
 
   });

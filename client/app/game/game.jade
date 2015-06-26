@@ -5,7 +5,8 @@ div(ng-include='"components/rightbar/rightbar.html"')
 	.game-container
 		.lobby-title
 			|{{lobby.name}}
-	
+		button.ready(ng-click='playerReady()')
+			|{{Ready}}
 //- ul.list-group
 //- 	li.list-group-item(ng-repeat="player in players")
 //- 		{{player.userName}}
