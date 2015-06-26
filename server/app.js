@@ -100,6 +100,8 @@ var updateLobby=function(socket)
 			}
 			socketio.to(room).emit('updateRoom',curLobby);
 		}
+		socketio.sockets.emit('updateLobbyList',lobbies);
+
 }
 
 socketio.sockets.on('connection', function(socket) {
@@ -161,9 +163,8 @@ socketio.sockets.on('connection', function(socket) {
 			socket.leave(socket.room);
 			console.log("Left Room: "+socket.room);
 			socket.room=null;
-
 		}
-
+		socketio.sockets.emit('updateLobbyList',lobbies);
 	});
 	socket.on('join',function(name){
 		
@@ -185,8 +186,6 @@ socketio.sockets.on('connection', function(socket) {
 			}
 		}
 		curLobby.users=toPush;
-		//console.log(toPush);
-		//socketio.to(name).emit('updateRoom',curLobby);
 
 	});
 

@@ -46,6 +46,7 @@ angular.module('nodedrawApp')
 
   
   $scope.goToLobby = function(lobby){
+    socketio.emit('getLobbyList');
     if(!(lobby.status==='#f44336'))
     {
       socketio.emit('leave');
