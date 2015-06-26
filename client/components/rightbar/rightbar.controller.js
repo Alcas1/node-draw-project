@@ -46,28 +46,31 @@ angular.module('nodedrawApp')
 
   
   $scope.goToLobby = function(lobby){
-    socketio.emit('leave');
-    socketio.emit('getRoom');
-    socketio.emit('join',lobby.name);
-    socketio.emit('getRoom');
-    $location.path('/game');
+    if(!(lobby.status==='#f44336'))
+    {
+      socketio.emit('leave');
+      socketio.emit('getRoom');
+      socketio.emit('join',lobby.name);
+      socketio.emit('getRoom');
+      $location.path('/game');
+    } 
   };
 
-   $scope.search = '';
-    var regex;
-    $scope.$watch('search', function (value) {
-        regex = new RegExp('\\b' + escapeRegExp(value), 'i');
-    });
-    
-    $scope.filterBySearch = function(name) {
-        if (!$scope.search) return true;
-        return regex.test(name.name);
-    };
+  $scope.search = '';
+  var regex;
+  $scope.$watch('search', function (value) {
+    regex = new RegExp('\\b' + escapeRegExp(value), 'i');
+  });
+
+  $scope.filterBySearch = function(name) {
+    if (!$scope.search) return true;
+    return regex.test(name.name);
+  };
 
 
 
 });
 
-function escapeRegExp(string){
-    return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-}
+      function escapeRegExp(string){
+        return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+      }

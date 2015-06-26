@@ -28,7 +28,13 @@ div.navbar.navbar-default.navbar-fixed-top {
     background-color: transparent;
     cursor: pointer;
 }
-.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+
+.navbar-default .navbar-nav > li {
+    background-color: #ff5722;
+}
+
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus,.navbar-default .navbar-nav > li > a:focus, ul.nav .navbar-nav li.ng-scope,.nav ul.navbar-nav li.ng-scope{
     color: #fff;
     background-color: #e64a19;
 
@@ -37,8 +43,7 @@ div.navbar.navbar-default.navbar-fixed-top {
     border-top-width: 0px;
 }
 
-
-.navbar .navbar-toggle,.navbar .navbar-toggle:hover {
+.navbar .navbar-toggle,.navbar .navbar-toggle:hover{
     background-color: #E64A19;
     border-width: 0px;
     border-radius: 3px;

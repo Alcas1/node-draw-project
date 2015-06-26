@@ -29,6 +29,11 @@ angular.module('nodedrawApp')
   };
 
   $scope.isActive = function(route) {
+    if(route==='/')
+    {
+      socketio.emit('leave');
+      socketio.emit('getRoom');
+    }
     return route === $location.path();
   };
 });

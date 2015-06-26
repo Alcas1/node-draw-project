@@ -16,9 +16,9 @@
 
 
 .lobby-container{
-    width: -moz-calc(100% - 200px);
-    width: -webkit-calc(100% - 200px);
-    width: calc(100% - 200px);
+    width: -moz-calc(100% - 250px);
+    width: -webkit-calc(100% - 250px);
+    width: calc(100% - 250px);
 }
 
 .lead{
@@ -72,7 +72,6 @@ p.input-group input.form-control{
     color: #000000;
     text-align: center;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
-    background: #ffffff;
 }
 
 
