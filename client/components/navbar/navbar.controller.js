@@ -29,7 +29,7 @@ angular.module('nodedrawApp')
   };
 
   $scope.checkLeave = function(item){
-    if(item.title==='Home')
+    if(item.title==='Home'||item==='Home')
     {
       socketio.emit('leave');
       socketio.emit('getRoom');
