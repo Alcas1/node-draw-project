@@ -24,7 +24,7 @@ div.navbar.navbar-default.navbar-fixed-top(ng-controller='NavbarCtrl')
           a(href='/login') Login
 
         li(ng-show='isLoggedIn()')
-          p.navbar-text Hello {{ getCurrentUser().name }}
+          p.navbar-text {{ getCurrentUser().name }}
 
         li(ng-show='isLoggedIn()', ng-class='{active: isActive("/settings")}')
           a(href='/settings')

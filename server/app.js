@@ -69,62 +69,70 @@ var getLobbyPosition=function(lobbyName)
 var updateLobby=function(socket)
 {
 	//problem is on leave that socket.room gets undefined
-		//
-		var users=socketio.sockets.sockets;
-		var room=null;
+	var users=socketio.sockets.sockets;
+	var room=null;
 
-		if(socket.toDelete)
-		{
-			var index=getLobbyPosition(curLobby);
-			console.log(index);
-			lobbies.splice(index, 1);
-			socket.toDelete=false;
-		}
-		if(socket.room&&!socket.prevRoom){
-			room=socket.room;
-		}
-		if(!socket.room&&socket.prevRoom)
-		{
-			room=socket.prevRoom;
-		}
-		//after joining or creating a lobby second time
-		if(socket.room&&socket.prevRoom)
-		{
-			room=socket.room;
-		}
-		var curLobby=getLobby(room);
-		if(curLobby&&users&&(socket.prevRoom||socket.room))
-		{
-			
-			var toPush=[];
-			for(var i=0;i<users.length;i++)
-			{
-				if(users[i].room===curLobby.name)
-				{
-					toPush.push({userId:users[i].id,userName:users[i].user.name});
-				}
-			}
-			curLobby.users=toPush;
-			
-			if(curLobby.users.length===curLobby.maxPlayers)
-			{
-				curLobby.status='#f44336';
-				curLobby.statusName='Lobby Full!';
-			}
-			else if(!(curLobby.code===''||!curLobby.code)){
-				curLobby.status='#ffc107';
-				curLobby.statusName='Private Lobby';
-			}
-			else
-			{
-				curLobby.status='#4caf50';
-				curLobby.statusName='Public Lobby';
-			}
-			socketio.to(room).emit('updateRoom',curLobby);
-		}
-		socketio.sockets.emit('updateLobbyList',lobbies);
-
+	if(socket.toDelete)
+	{
+		var index=getLobbyPosition(curLobby);
+		console.log(index);
+		lobbies.splice(index, 1);
+		socket.toDelete=false;
 	}
+	if(socket.room&&!socket.prevRoom){
+		room=socket.room;
+	}
+	if(!socket.room&&socket.prevRoom)
+	{
+		room=socket.prevRoom;
+	}
+	//after joining or creating a lobby second time
+	if(socket.room&&socket.prevRoom)
+	{
+		room=socket.room;
+	}
+	var curLobby=getLobby(room);
+	if(curLobby&&users&&(socket.prevRoom||socket.room))
+	{
+
+		var toPush=[];
+		for(var i=0;i<users.length;i++)
+		{
+			if(users[i].room===curLobby.name)
+			{
+				toPush.push({userId:users[i].id,userName:users[i].user.name});
+			}
+		}
+		curLobby.users=toPush;
+		var adminHere=false;
+		for(var i=0;i<toPush.length;i++)
+		{
+			if(toPush[i].userId===curLobby.adminId)
+				adminHere=true;
+		}
+		if(!adminHere)
+		{
+			curLobby.adminId=toPush[0].userId;
+		}
+		if(curLobby.users.length===curLobby.maxPlayers)
+		{
+			curLobby.status='#f44336';
+			curLobby.statusName='Lobby Full!';
+		}
+		else if(!(curLobby.code===''||!curLobby.code)){
+			curLobby.status='#ffc107';
+			curLobby.statusName='Private Lobby';
+		}
+		else
+		{
+			curLobby.status='#4caf50';
+			curLobby.statusName='Public Lobby';
+		}
+		socketio.to(room).emit('updateRoom',curLobby);
+	}
+	socketio.sockets.emit('updateLobbyList',lobbies);
+
+}
 
 // function shuffle(array) {
 //   var m = array.length, t, i;
@@ -147,153 +155,135 @@ var updateLobby=function(socket)
 socketio.sockets.on('connection', function(socket) {
 	if(!connected)
 	{
-		// setInterval(function()
-		// {
-		// 	socketio.sockets.emit('updateLobbyList',lobbies);
-		// 	console.log("Total Lobbies on Server: "+lobbies.length)
-		// }, 3000);
-		// setInterval(function()
-		// {
-		// 	socketio.sockets.emit('userCountChange',numUsers);
-		// }, 1000);
-connected=true;
-}	
+		connected=true;
+	}	
 
-socket.on('getUserNum',function(){
+	socket.on('getUserNum',function(){
+		socketio.sockets.emit('userCountChange',numUsers);
+	});
+
+	console.log("Total Users on Server: "+(++numUsers));
+	socket.on('getLobbyList',function(){
+		socketio.sockets.emit('updateLobbyList',lobbies);
+	});
+
 	socketio.sockets.emit('userCountChange',numUsers);
-});
-
-console.log("Total Users on Server: "+(++numUsers));
-socket.on('getLobbyList',function(){
-	socketio.sockets.emit('updateLobbyList',lobbies);
-});
-
-socketio.sockets.emit('userCountChange',numUsers);
-socket.on('createLobby',function(newLobby)
-{
-	var isCreated=false;
-	for(var i=0;i<lobbies.length;i++)
+	socket.on('createLobby',function(newLobby)
 	{
-		if((newLobby.lobbyName)===(lobbies[i].name))
-			isCreated=true;
-	}
-	if(!isCreated)
-	{
-		var nLobby=new lobby(newLobby.lobbyName,newLobby.code,newLobby.lobbyPlayerNum);
-		nLobby.adminId=socket.id;
-		socket.room=nLobby.name;
-		socket.join(nLobby.name);
-		console.log("Created and joined lobby: "+nLobby.name);
-		var users=socketio.sockets.sockets;
-		var toPush=[];
-		for(var i=0;i<users.length;i++)
+		var isCreated=false;
+		for(var i=0;i<lobbies.length;i++)
 		{
-			if(users[i].room===nLobby.name)
-			{
-				toPush.push({userId:users[i].id,userName:users[i].user.name});
-			}
+			if((newLobby.lobbyName)===(lobbies[i].name))
+				isCreated=true;
 		}
-		nLobby.users=toPush;
-		console.log(toPush);
-		lobbies.unshift(nLobby);
-
-	}
-
-});
-socket.on('leave',function(name){
-	var curLobby=getLobby(name);
-	if(socket.room)
-	{
-		socket.prevRoom=socket.room;
-		var users=socketio.sockets.sockets;
-		var usersInRoom=0;
-		for(var i=0;i<users.length;i++)
+		if(!isCreated)
 		{
-			if(users[i].room===socket.room)
+			var nLobby=new lobby(newLobby.lobbyName,newLobby.code,newLobby.lobbyPlayerNum);
+			nLobby.adminId=socket.id;
+			socket.room=nLobby.name;
+			socket.join(nLobby.name);
+			console.log("Created and joined lobby: "+nLobby.name);
+			var users=socketio.sockets.sockets;
+			var toPush=[];
+			for(var i=0;i<users.length;i++)
 			{
-				usersInRoom++;		
+				if(users[i].room===nLobby.name)
+				{
+					toPush.push({userId:users[i].id,userName:users[i].user.name});
+				}
 			}
+			nLobby.users=toPush;
+			console.log(toPush);
+			lobbies.unshift(nLobby);
+
 		}
-		if(usersInRoom===1)
-		{	
-			console.log(usersInRoom);
-			socket.toDelete=true;
-		}
 
-		socket.leave(socket.room);
-
-		console.log("Left Room: "+socket.room);
-		socket.room=null;
-	}
-	
-	socketio.sockets.emit('updateLobbyList',lobbies);
-});
-socket.on('join',function(name){
-
-	var curLobby=getLobby(name);
-	if(curLobby){
-		console.log("Joined Room: "+name);
+	});
+	socket.on('leave',function(name){
+		var curLobby=getLobby(name);
 		if(socket.room)
 		{
 			socket.prevRoom=socket.room;
-		}
-		socket.room=name;
-		socket.join(name);
-		var users=socketio.sockets.sockets;
-		var toPush=[];
-		for(var i=0;i<users.length;i++)
-		{
-			if(users[i].room===curLobby.name)
+			var users=socketio.sockets.sockets;
+			var usersInRoom=0;
+			for(var i=0;i<users.length;i++)
 			{
-				toPush.push({userId:users[i].id,userName:users[i].user.name});
+				if(users[i].room===socket.room)
+				{
+					usersInRoom++;		
+				}
 			}
+			if(usersInRoom===1)
+			{	
+				console.log(usersInRoom);
+				socket.toDelete=true;
+			}
+
+			socket.leave(socket.room);
+
+			console.log("Left Room: "+socket.room);
+			socket.room=null;
 		}
-		curLobby.users=toPush;
-	}
-});
 
-socket.on('getRoom',function(){
-	updateLobby(socket);
-});
+		socketio.sockets.emit('updateLobbyList',lobbies);
+	});
+	socket.on('join',function(name){
 
-socket.on('playerReady',function(){
+		var curLobby=getLobby(name);
+		if(curLobby){
+			console.log("Joined Room: "+name);
+			if(socket.room)
+			{
+				socket.prevRoom=socket.room;
+			}
+			socket.room=name;
+			socket.join(name);
+			var users=socketio.sockets.sockets;
+			var toPush=[];
+			for(var i=0;i<users.length;i++)
+			{
+				if(users[i].room===curLobby.name)
+				{
+					toPush.push({userId:users[i].id,userName:users[i].user.name});
+				}
+			}
+			curLobby.users=toPush;
+		}
+	});
+
+	socket.on('getRoom',function(){
+		updateLobby(socket);
+	});
+
+	socket.on('playerReady',function(){
 
 
-});
+	});
 
-socket.on('updateUser',function(curUser){
-	socket.user=curUser;
+	socket.on('updateUser',function(curUser){
+		socket.user=curUser;
 		//console.log(socket.user);
 	});
 
 
-socket.on('disconnect', function() {
-	console.log("Total Users on Server: "+(--numUsers));
-	socketio.sockets.emit('userCountChange',numUsers);
-	if(socket.room)
-	{
-		socket.prevRoom=socket.room;
-		var users=socketio.sockets.sockets;
-		var usersInRoom=0;
-		for(var i=0;i<users.length;i++)
+	socket.on('disconnect', function() {
+		console.log("Total Users on Server: "+(--numUsers));
+		socketio.sockets.emit('userCountChange',numUsers);
+		if(socket.room)
 		{
-			if(users[i].room===socket.room)
+			var curLobby=getLobby(socket.room);
+			socket.prevRoom=socket.room;
+			if(curLobby.users.length===1)
 			{
-				usersInRoom++;		
+				socket.toDelete=true;
 			}
+			socket.leave(socket.room);
+			socket.room=null;
+			console.log("Left Room: "+socket.room);
 		}
-		if(usersInRoom===1)
-		{	
-			console.log(usersInRoom);
-			socket.prevRoom=null;
-		}
+		updateLobby(socket);
 
-		socket.leave(socket.room);
-		console.log("Left Room: "+socket.room);
-	}
-	updateLobby(socket);
-
-});
+	});
 
 });
 
