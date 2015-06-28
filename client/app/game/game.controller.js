@@ -39,6 +39,7 @@ angular.module('nodedrawApp')
 				tempScore:0,
 				totalScore:0,
 				provider: "local",
+				status:0
 			};
 			socketio.emit('updateUser',curUser);
 		}
@@ -47,7 +48,16 @@ angular.module('nodedrawApp')
 
 
 	$scope.playerReady=function(){
+		if($scope.Ready==='Start')
+		{
+			
+			socketio.emit('startGame')
+		}
+		else{
 
+
+			socketio.emit('playerStatusUpdate',1);
+		}
 	}
   	//$scope.getCurrentUser=User.get();
 

@@ -13,7 +13,7 @@ div(ng-include='"components/rightbar/rightbar.html"')
       p.input-group
         label Name
         input.form-control(type='text' name='lobbyName' placeholder='Name' ng-model='lobbyName' ng-maxlength='18' required)
-        input.form-control(type='number' name='lobbyPlayerNum' placeholder='Players(Max 4)' ng-model='lobbyPlayerNum' ng-pattern='/^[1-4]+$/' ng-maxlength='1' required)
+        input.form-control(type='number' name='lobbyPlayerNum' placeholder='Players(Max 8)' ng-model='lobbyPlayerNum' ng-pattern='/^[3-8]+$/' ng-maxlength='1' required)
         input.form-control(type='text' placeholder='Code' ng-model='code')
         .input-group-btn
           button.btn.btn-primary(type='submit') Create Lobby

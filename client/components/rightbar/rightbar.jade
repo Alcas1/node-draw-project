@@ -7,6 +7,7 @@
 			li.list-group-item(ng-repeat="listItem in listItems| filter:filterBySearch" ng-click="goToLobby(listItem)" ng-show='state===0' ng-mouseenter="onHover = 'fadeIn'" ng-mouseleave="onHover = 'fadeOut'")
 				.listItemContainer
 					.roomStatus(ng-style="{'background-color' : listItem.status}")
+					.roomState(ng-style="{'background-color' : listItem.state}")
 					.listItemTitle
 						{{listItem.name}}
 					.listItemPlayers
@@ -15,8 +16,10 @@
 						p {{listItem.statusName}}
 
 
-			li.list-group-item(ng-repeat="listItem in listItems" ng-show='state===1')
+			li.list-group-item(ng-repeat="listItem in listItems" ng-show='state===1' ng-mouseenter="onHover = 'fadeIn'" ng-mouseleave="onHover = 'fadeOut'")
 				.playerName
 					{{listItem.userName}}
-				.roomStatus(ng-style="{'background-color' : listItem.status}")
-	
+				.roomStatus(ng-style="{'background-color' : listItem.statusColor}")
+				.admin(ng-show="listItem.isAdmin")
+				div(ng-class='onHover' ng-show="onHover==='fadeIn'")
+						p {{listItem.statusName}}

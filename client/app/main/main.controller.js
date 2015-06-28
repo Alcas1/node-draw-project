@@ -69,6 +69,7 @@ angular.module('nodedrawApp')
         tempScore:0,
         totalScore:0,
         provider: "local",
+        status:0
       };
       socketio.emit('updateUser',curUser);
     }

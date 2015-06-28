@@ -22,6 +22,8 @@ angular.module('nodedrawApp')
           // Logged in, redirect to home
           $scope.getCurrentUser=User.get();
           $scope.getCurrentUser.$promise.then(function(data) {
+            socketio.emit('leave');
+            socketio.emit('getRoom');
             socketio.emit('updateUser',data);
           });
           socketio.emit('getRoom');
