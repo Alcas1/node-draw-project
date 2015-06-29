@@ -273,6 +273,7 @@ socketio.sockets.on('connection', function(socket) {
 			}
 			curLobby.users=toPush;
 		}
+		socketio.sockets.in(name).emit('chatMessage',socket.user.name+' has Joined');
 	});
 
 	socket.on('getRoom',function(){
