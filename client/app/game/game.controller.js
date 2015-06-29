@@ -45,9 +45,12 @@ angular.module('nodedrawApp')
 		}
 
 	});
-
-
+	socketio.on('chatMessage',function(msg){
+		$('#messages-chat').append($('<li>').text(msg));
+		$("#messages-chat").scrollTop($("#messages-chat")[0].scrollHeight);
+	});
 	$scope.playerReady=function(){
+		 socketio.emit('updateChat','omg');
 		if($scope.Ready==='Start')
 		{
 			
@@ -59,6 +62,5 @@ angular.module('nodedrawApp')
 			socketio.emit('playerStatusUpdate',1);
 		}
 	}
-  	//$scope.getCurrentUser=User.get();
 
   });

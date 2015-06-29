@@ -311,6 +311,10 @@ socketio.sockets.on('connection', function(socket) {
 		//console.log(socket.user);
 	});
 
+	socket.on('updateChat',function(msg){
+		socketio.sockets.in(socket.room).emit('chatMessage',msg);
+	});
+
 
 	socket.on('disconnect', function() {
 		console.log("Total Users on Server: "+(--numUsers));
