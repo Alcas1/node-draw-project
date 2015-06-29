@@ -63,6 +63,10 @@ angular.module('nodedrawApp')
       socketio.emit('getRoom');
       socketio.emit('join',lobby.name);
       socketio.emit('getRoom');
+      if(lobby.state==='#0091ea')
+      {
+        socketio.emit('playerStatusUpdate',3);
+      }
       $location.path('/game');
     } 
   };
