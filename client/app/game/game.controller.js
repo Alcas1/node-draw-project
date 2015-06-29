@@ -32,8 +32,9 @@ angular.module('nodedrawApp')
 			});
 		}
 		else{
+			//PROMPT FOR USERNAME
 			var curUser ={
-				name: "Guest "+socketio.id.substring(0,8),
+				name: "Guest "+socketio.id.substring(0,5),
 				email: "",
 				role: "user",
 				tempScore:0,
@@ -45,12 +46,21 @@ angular.module('nodedrawApp')
 		}
 
 	});
+
+	$("#userMsg").keypress(function (e) {
+		if(e.which == 13) {
+			socketio.emit('sendChat',$(this).val());
+			$(this).val("");
+			e.preventDefault();
+		}
+	});
+
 	socketio.on('chatMessage',function(msg){
 		$('#messages-chat').append($('<li>').text(msg));
 		$("#messages-chat").scrollTop($("#messages-chat")[0].scrollHeight);
 	});
 	$scope.playerReady=function(){
-		 socketio.emit('updateChat','omg');
+		socketio.emit('updateChat','omg');
 		if($scope.Ready==='Start')
 		{
 			
@@ -63,4 +73,4 @@ angular.module('nodedrawApp')
 		}
 	}
 
-  });
+});

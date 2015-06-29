@@ -218,7 +218,7 @@ socketio.sockets.on('connection', function(socket) {
 			nLobby.users=toPush;
 			console.log(toPush);
 			lobbies.unshift(nLobby);
-
+			socketio.sockets.in(nLobby.name).emit('chatMessage',socket.user.name+' has Joined');
 		}
 
 	});
@@ -243,8 +243,7 @@ socketio.sockets.on('connection', function(socket) {
 			}
 
 			socket.leave(socket.room);
-
-			console.log("Left Room: "+socket.room);
+			socketio.sockets.in(name).emit('chatMessage',socket.user.name+' has Left');
 			socket.room=null;
 		}
 
@@ -314,6 +313,10 @@ socketio.sockets.on('connection', function(socket) {
 
 	socket.on('updateChat',function(msg){
 		socketio.sockets.in(socket.room).emit('chatMessage',msg);
+	});
+
+	socket.on('sendChat',function(msg){
+		socketio.sockets.in(socket.room).emit('chatMessage',socket.user.name+': '+msg);
 	});
 
 

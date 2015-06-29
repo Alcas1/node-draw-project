@@ -11,6 +11,9 @@ div(ng-include='"components/rightbar/rightbar.html"')
 			.messages-title
 				|Chat
 			ul#messages-chat
+			form#chat(action="")
+				textarea#userMsg(placeholder='Message...')
+
 //- ul.list-group
 //- 	li.list-group-item(ng-repeat="player in players")
 //- 		{{player.userName}}

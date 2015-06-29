@@ -63,7 +63,7 @@ angular.module('nodedrawApp')
     }
     else{
       var curUser ={
-        name: "Guest "+socketio.id.substring(0,8),
+        name: "Guest "+socketio.id.substring(0,5),
         email: "",
         role: "user",
         tempScore:0,
