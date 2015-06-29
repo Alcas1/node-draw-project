@@ -332,11 +332,12 @@ socketio.sockets.on('connection', function(socket) {
 			{
 				socket.toDelete=true;
 			}
+			updateLobby(socket);
 			socket.leave(socket.room);
+			socketio.sockets.in(name).emit('chatMessage',socket.user.name+' has Disconnected');
 			socket.room=null;
-			console.log("Left Room: "+socket.room);
 		}
-		updateLobby(socket);
+		console.log('omfg');
 
 	});
 

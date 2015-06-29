@@ -3,9 +3,16 @@ div(ng-include='"components/rightbar/rightbar.html"')
 
 .container
 	.game-container
-		.lobby-title
+		.lobby-title(ng-show='state===0')
 			|{{lobby.name}}
-		button.ready(ng-click='playerReady()')
+		#draw-game(ng-show='state===1')
+			|OMG DRAW
+			#timer
+				|45
+
+
+
+		button.ready(ng-click='playerReady()' ng-show='state===0')
 			|{{Ready}}
 		.messages
 			.messages-title

@@ -96,4 +96,8 @@ textarea#userMsg{
 	overflow: hidden;
 }
 
+#draw-game{
+	position: absolute;
+}
+
 

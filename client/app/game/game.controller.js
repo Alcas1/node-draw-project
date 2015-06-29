@@ -6,7 +6,7 @@ angular.module('nodedrawApp')
 		path: '/socket.io-client'
 	});
 	
-	
+	$scope.state=0;
 	
 	var curLobby;
 	socketio.emit('getRoom');
@@ -67,7 +67,7 @@ angular.module('nodedrawApp')
 		// socketio.emit('updateChat','omg');
 		if($scope.Ready==='Start')
 		{
-			
+			$scope.state=1;
 			socketio.emit('startGame')
 		}
 		else{
