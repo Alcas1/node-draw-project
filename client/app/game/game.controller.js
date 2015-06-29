@@ -1,16 +1,17 @@
 'use strict';
-
+var connected=false;
 angular.module('nodedrawApp')
 .controller('GameCtrl', function ($scope, $http, $location, Auth,User) {
 	var socketio = io('', {
 		path: '/socket.io-client'
 	});
 	
+	
+	
 	var curLobby;
 	socketio.emit('getRoom');
 	socketio.on('updateRoom',function(nLobby){
 		$scope.lobby=nLobby;
-		console.log(socketio.id);
 		if(socketio.id===nLobby.adminId)
 		{
 			$scope.Ready='Start';
@@ -54,13 +55,16 @@ angular.module('nodedrawApp')
 			e.preventDefault();
 		}
 	});
-
-	socketio.on('chatMessage',function(msg){
-		$('#messages-chat').append($('<li>').text(msg));
-		$("#messages-chat").scrollTop($("#messages-chat")[0].scrollHeight);
-	});
+	if(!connected)
+	{
+		socketio.on('chatMessage',function(msg){
+			$('#messages-chat').append($('<li>').text(msg));
+			$("#messages-chat").scrollTop($("#messages-chat")[0].scrollHeight);
+		});
+		connected=true;
+	}
 	$scope.playerReady=function(){
-		socketio.emit('updateChat','omg');
+		// socketio.emit('updateChat','omg');
 		if($scope.Ready==='Start')
 		{
 			

@@ -75,8 +75,9 @@ var updateLobby=function(socket)
 	//console.log(users);
 	if(socket.toDelete)
 	{
-		var index=getLobbyPosition(curLobby);
-		console.log(index);
+
+		var index=getLobbyPosition(socket.prevRoom);
+		console.log("Lobby Index Deleted: "+index+" Lobby Name: "+socket.prevRoom);
 		lobbies.splice(index, 1);
 		socket.toDelete=false;
 	}
@@ -118,7 +119,7 @@ var updateLobby=function(socket)
 		}
 		if(!adminHere)
 		{
-			if(curLobby)
+			if(curLobby&&toPush.length>0)
 			{
 				curLobby.adminId=toPush[0].userId;
 			}
@@ -218,7 +219,7 @@ socketio.sockets.on('connection', function(socket) {
 			nLobby.users=toPush;
 			console.log(toPush);
 			lobbies.unshift(nLobby);
-			socketio.sockets.in(nLobby.name).emit('chatMessage',socket.user.name+' has Joined');
+			//socketio.sockets.in(nLobby.name).emit('chatMessage',socket.user.name+' has Joined');
 		}
 
 	});
@@ -243,7 +244,7 @@ socketio.sockets.on('connection', function(socket) {
 			}
 
 			socket.leave(socket.room);
-			socketio.sockets.in(name).emit('chatMessage',socket.user.name+' has Left');
+			socketio.sockets.in(socket.room).emit('chatMessage',socket.user.name+' has Left');
 			socket.room=null;
 		}
 
