@@ -314,6 +314,7 @@ socketio.sockets.on('connection', function(socket) {
 				}
 			}
 		}
+		socketio.sockets.in(socket.room).emit('startClientGame');
 		socket.status=2;
 		socket.state=1;
 		updateLobby(socket);
