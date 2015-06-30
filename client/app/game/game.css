@@ -1,12 +1,12 @@
 .game-container{
-    width: -moz-calc(95% - 200px);
-    width: -webkit-calc(95% - 200px);
-    width: calc(95% - 200px);
-    height:83%;
-    position: absolute;
-    box-shadow: 0px 2px 2px rgba(43, 59, 93, 0.29);
-    border-radius: 8px;
-    background-color: #fff;
+	width: -moz-calc(95% - 200px);
+	width: -webkit-calc(95% - 200px);
+	width: calc(95% - 200px);
+	height:83%;
+	position: absolute;
+	box-shadow: 0px 2px 2px rgba(43, 59, 93, 0.29);
+	border-radius: 8px;
+	background-color: #fff;
 }
 
 .container{
@@ -45,9 +45,9 @@
 	/*border: 3px solid #DDD;*/
 	right:0px;
 	height:100%;
-   	width: -moz-calc(10% + 150px);
-    width: -webkit-calc(10% + 150px);
-    width: calc(10% + 150px);
+	width: -moz-calc(10% + 150px);
+	width: -webkit-calc(10% + 150px);
+	width: calc(10% + 150px);
 }
 
 .messages-title{
@@ -60,8 +60,8 @@
 
 #messages-chat{
 	height: -moz-calc(100% - 105px);
-    height: -webkit-calc(100% - 105px);
-    height: calc(100% - 105px);
+	height: -webkit-calc(100% - 105px);
+	height: calc(100% - 105px);
 	font-size: 14px;
 	padding-left:15px;
 	padding-right: 15px;
@@ -96,27 +96,48 @@ textarea#userMsg{
 	overflow: hidden;
 }
 
-#draw-game{
-	position: absolute;
-	width: -moz-calc(90% - 150px);
-    width: -webkit-calc(90% - 150px);
-    width: calc(90% - 150px);
-    height: 100%;
+@media (min-width: 330px) {
+
+	#draw-game{
+		position: absolute;
+		width: -moz-calc(90% - 150px);
+		width: -webkit-calc(90% - 150px);
+		width: calc(90% - 150px);
+		height: -moz-calc(100% - 120px);
+		height: -webkit-calc(100% - 120px);
+		height: calc(100% - 120px);
+	}
 }
+
+
+@media (min-width: 1000px) {
+
+	#draw-game{
+		position: absolute;
+		width: -moz-calc(90% - 150px);
+		width: -webkit-calc(90% - 150px);
+		width: calc(90% - 150px);
+		height: -moz-calc(100% - 60px);
+		height: -webkit-calc(100% - 60px);
+		height: calc(100% - 60px);
+	}
+}
+
+
+
+
 #timer{
 	position:absolute;
 	/*right: -moz-calc(10% + 150px);
     right: -webkit-calc(10% + 150px);
     right: calc(10% + 150px);*/
-    top:0px;
-    right:0px;
+    top:5px;
+    right:10px;
 }
 
 #draw{
-	border-bottom-left-radius: 8px;
+	/*border-bottom-left-radius: 8px;*/
 	border-top-left-radius: 8px;
-	/*width: 80%;
-	height:100%;*/
 	z-index: 1000;
 	position: absolute;
 	box-shadow: 0px 2px 2px rgba(43, 59, 93, 0.29);

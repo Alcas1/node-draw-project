@@ -35,7 +35,7 @@ angular.module('nodedrawApp')
 
 				var mouseX = e.pageX - this.offsetLeft-15;
 				var mouseY = e.pageY - this.offsetTop-70;
-
+				console.log(this.offsetTop);
 				paint = true;
 				addClick(e.pageX - this.offsetLeft-15, e.pageY - this.offsetTop-70);
 				redraw();
@@ -144,8 +144,9 @@ angular.module('nodedrawApp')
 
   	socketio.on('joinInGame',function()
   	{
-		// socketio.emit('getLobbyTime');
-		// $scope.state=1;
+		socketio.emit('getLobbyTime');
+  		socketio.emit('getPlayerStatus');
+  		$scope.state=1;
 	});
 
   	socketio.on('setClientStatus',function(status)

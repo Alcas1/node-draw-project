@@ -13,7 +13,7 @@ div(ng-include='"components/rightbar/rightbar.html"')
 		#draw-game(ng-show='state===1')
 			#timer
 				{{timeLeft}}
-			canvas#draw(ng-show='state===1')
+			canvas#draw
 		button.ready(ng-click='playerReady()' ng-show='state===0')
 			|{{Ready}}
 		.messages
