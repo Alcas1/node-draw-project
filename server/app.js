@@ -182,8 +182,8 @@ socketio.sockets.on('connection', function(socket) {
 	{
 		setInterval(function(){
 					// socketio.sockets.in(socket.room).emit('updateTime', seconds); 
-			socketio.sockets.emit('incrementSecond');
-		}, 1000);
+					socketio.sockets.emit('incrementSecond');
+				}, 1000);
 		socket.status=0;
 		connected=true;
 	}	
@@ -318,6 +318,19 @@ socketio.sockets.on('connection', function(socket) {
 		socket.status=2;
 		socket.state=1;
 		updateLobby(socket);
+	});
+
+	socket.on('getPlayerStatus',function(){
+		var users=getLobby(socket.room).users;
+		for(var i=0;i<users.length;i++)
+		{	
+			if(users[i].userId===socket.id)
+			{
+				socket.emit('setClientStatus',users[i].status);
+			}
+		}
+		
+
 	});
 
 	socket.on('setGameTime',function(seconds){

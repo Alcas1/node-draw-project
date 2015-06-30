@@ -1,4 +1,4 @@
-'use strict';
+
 var connected=false;
 angular.module('nodedrawApp')
 .controller('GameCtrl', function ($scope, $http, $location, Auth,User) {
@@ -6,7 +6,6 @@ angular.module('nodedrawApp')
 		path: '/socket.io-client'
 	});
 	$scope.state=0;
-
 	var clickX = new Array();
 	var clickY = new Array();
 	var clickDrag = new Array();
@@ -22,59 +21,63 @@ angular.module('nodedrawApp')
 	var c = document.getElementById("draw");
 	c.style.width ='100%';
 	c.style.height='100%';
-  	
-  	c.width  = c.offsetWidth;
-  	c.height = c.offsetHeight;
-  	var ctx = c.getContext("2d");
-  	$('#draw').mousedown(function(e){
-  		
-  		var mouseX = e.pageX - this.offsetLeft-15;
-  		var mouseY = e.pageY - this.offsetTop-70;
 
-  		paint = true;
-  		addClick(e.pageX - this.offsetLeft-15, e.pageY - this.offsetTop-70);
-  		redraw();
-  	});
+	c.width  = c.offsetWidth;
+	c.height = c.offsetHeight;
+	var ctx = c.getContext("2d");
+
+	function canvasEvents(status)
+	{
+
+		if($scope.playerStatus===2)
+		{
+			$('#draw').mousedown(function(e){
+
+				var mouseX = e.pageX - this.offsetLeft-15;
+				var mouseY = e.pageY - this.offsetTop-70;
+
+				paint = true;
+				addClick(e.pageX - this.offsetLeft-15, e.pageY - this.offsetTop-70);
+				redraw();
+			});
 
 
-  	$('#draw').mousemove(function(e){
-  		if(paint){
-  			console.log('mousemove paint');
-  			addClick(e.pageX - this.offsetLeft-15, e.pageY - this.offsetTop-70, true);
-  			redraw();
-  		}
-  	});
+			$('#draw').mousemove(function(e){
+				if(paint){
+					addClick(e.pageX - this.offsetLeft-15, e.pageY - this.offsetTop-70, true);
+					redraw();
+				}
+			});
 
-  	$('#draw').mouseup(function(e){
-  		console.log('mouseup');
-  		paint = false;
-  	});
+			$('#draw').mouseup(function(e){
+				paint = false;
+			});
 
-  	$('#draw').mouseleave(function(e){
-  		console.log('mouseleave');
-  		paint = false;
-  	});
+			$('#draw').mouseleave(function(e){
+				paint = false;
+			});
 
-  	function redraw(){
-  		// ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
+			function redraw(){
+  				// ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
 
-  		ctx.strokeStyle = "#df4b26";
-  		ctx.lineJoin = "round";
-  		ctx.lineWidth = 5;
-  		for(var i=0; i < clickX.length; i++) {	
-  			ctx.beginPath();
-  			if(clickDrag[i] && i){
-  				ctx.moveTo(clickX[i-1], clickY[i-1]);
-  			}else{
-  				ctx.moveTo(clickX[i]-1, clickY[i]);
+  				ctx.strokeStyle = "#df4b26";
+  				ctx.lineJoin = "round";
+  				ctx.lineWidth = 5;
+  				for(var i=0; i < clickX.length; i++) {	
+  					ctx.beginPath();
+  					if(clickDrag[i] && i){
+  						ctx.moveTo(clickX[i-1], clickY[i-1]);
+  					}else{
+  						ctx.moveTo(clickX[i]-1, clickY[i]);
+  					}
+  					ctx.lineTo(clickX[i], clickY[i]);
+  					ctx.closePath();
+  					ctx.stroke();
+  				}
   			}
-  			ctx.lineTo(clickX[i], clickY[i]);
-  			ctx.closePath();
-  			ctx.stroke();
   		}
+
   	}
-
-
 
 
   	var curLobby;
@@ -145,8 +148,15 @@ angular.module('nodedrawApp')
 		// $scope.state=1;
 	});
 
+  	socketio.on('setClientStatus',function(status)
+  	{
+  		$scope.playerStatus=status;
+  		canvasEvents(status);
+  	});
+
   	socketio.on('startClientGame',function(){
   		socketio.emit('getLobbyTime');
+  		socketio.emit('getPlayerStatus');
   		$scope.state=1;
   	});
 
