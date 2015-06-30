@@ -5,6 +5,7 @@ angular.module('nodedrawApp')
 	var socketio = io('', {
 		path: '/socket.io-client'
 	});
+	$scope.playerStatus=1;
 	$scope.state=0;
 	var clickX = new Array();
 	var clickY = new Array();
@@ -21,11 +22,12 @@ angular.module('nodedrawApp')
 	var c = document.getElementById("draw");
 	c.style.width ='100%';
 	c.style.height='100%';
-	window.addEventListener('resize', canvasEvents(), false);
-
 	c.width  = c.offsetWidth;
 	c.height = c.offsetHeight;
 	var ctx = c.getContext("2d");
+	window.addEventListener('resize', canvasEvents($scope.playerStatus), false);
+
+
 
 	function canvasEvents(status)
 	{
@@ -86,7 +88,6 @@ angular.module('nodedrawApp')
   					}
   				}
   				redraw();
-
   			}
   			resizeCanvas();
   		}
