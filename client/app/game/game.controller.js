@@ -2,13 +2,15 @@
 var connected=false;
 angular.module('nodedrawApp')
 .controller('GameCtrl', function ($scope, $http, $location, Auth,User) {
-	
 	var socketio = io('', {
 		path: '/socket.io-client'
 	});
-	
 	$scope.state=0;
-	
+	var c = document.getElementById("draw");
+	var ctx = c.getContext("2d");
+	ctx.beginPath();
+	ctx.arc(95,50,40,0,2*Math.PI);
+	ctx.stroke();
 	var curLobby;
 	socketio.emit('getRoom');
 	socketio.on('updateRoom',function(nLobby){
@@ -58,29 +60,44 @@ angular.module('nodedrawApp')
 			e.preventDefault();
 		}
 	});
+
+	socketio.on('incrementSecond',function()
+	{
+
+		socketio.emit('setGameTime',$scope.timeLeft--);
+		// $scope.timeLeft--;
+		$scope.$apply();
+	});
+
+	socketio.on('setClientTime',function(time){
+		$scope.timeLeft=time;
+	});
+
+	socketio.on('joinInGame',function()
+	{
+		console.log('omfg');
+		socketio.emit('getLobbyTime');
+		$scope.state=1;
+	});
+
 	if(!connected)
 	{
 		socketio.on('chatMessage',function(msg){
 			$('#messages-chat').append($('<li>').text(msg));
 			$("#messages-chat").scrollTop($("#messages-chat")[0].scrollHeight);
 		});
-		socketio.on('updateTime',function(seconds)
-		{
-			$scope.state=1;
-			$scope.timeLeft=seconds;
-			$scope.$apply();
-		});
-		socketio.on('joinInGame',function()
-		{
-			$scope.state=1;
-		});
+		
+		
 		connected=true;
 	}
 	$scope.playerReady=function(){
 		// socketio.emit('updateChat','omg');
 		if($scope.Ready==='Start')
 		{
-			socketio.emit('startGame')
+			socketio.emit('setGameTime',45);
+			socketio.emit('getLobbyTime');
+			socketio.emit('startGame');
+			$scope.state=1;
 		}
 		else{
 

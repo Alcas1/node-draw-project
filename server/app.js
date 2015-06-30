@@ -45,9 +45,12 @@ function lobby(name,code,players) {
 	this.state;
 	this.status;
 	this.statusName;
+	this.time;
 }
 var lobbies = [];
 var connected=false;
+
+
 
 var getLobby=function(lobbyName)
 {
@@ -177,6 +180,10 @@ var updateLobby=function(socket)
 socketio.sockets.on('connection', function(socket) {
 	if(!connected)
 	{
+		setInterval(function(){
+					// socketio.sockets.in(socket.room).emit('updateTime', seconds); 
+			socketio.sockets.emit('incrementSecond');
+		}, 1000);
 		socket.status=0;
 		connected=true;
 	}	
@@ -272,8 +279,10 @@ socketio.sockets.on('connection', function(socket) {
 				}
 			}
 			curLobby.users=toPush;
+
 			if(curLobby.state==='#0091ea')
 			{
+				// console.log('in game');
 				socket.emit('joinInGame');
 			}
 		}
@@ -307,22 +316,21 @@ socketio.sockets.on('connection', function(socket) {
 		}
 		socket.status=2;
 		socket.state=1;
-		var seconds=45;
-		var timer=setInterval(function(){
-			socketio.sockets.in(socket.room).emit('updateTime', seconds); 
-			seconds--;
-			if(seconds===-1)
-			{
-				clearInterval(timer);
-			}
-		}, 1000);
-
-
-
-
-
-
 		updateLobby(socket);
+	});
+
+	socket.on('setGameTime',function(seconds){
+		for(var i=0;i<lobbies.length;i++)
+		{
+			if(lobbies[i].name===socket.room)
+			{
+				lobbies[i].time=seconds;
+			}
+		}
+	});
+
+	socket.on('getLobbyTime',function(){
+		socketio.sockets.in(socket.room).emit('setClientTime',getLobby(socket.room).time);
 	});
 
 
