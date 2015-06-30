@@ -21,6 +21,7 @@ angular.module('nodedrawApp')
 	var c = document.getElementById("draw");
 	c.style.width ='100%';
 	c.style.height='100%';
+	window.addEventListener('resize', canvasEvents(), false);
 
 	c.width  = c.offsetWidth;
 	c.height = c.offsetHeight;
@@ -29,23 +30,30 @@ angular.module('nodedrawApp')
 	function canvasEvents(status)
 	{
 
-		if($scope.playerStatus===2)
+		if(status===2)
 		{
 			$('#draw').mousedown(function(e){
 
-				var mouseX = e.pageX - this.offsetLeft-15;
-				var mouseY = e.pageY - this.offsetTop-70;
-				console.log(this.offsetTop);
+				var mouseX = ((e.pageX -15)/$('#draw').width())*$('#draw').width();
+				var mouseY = ((e.pageY -70)/$('#draw').height())*$('#draw').height();
+				
+				// console.log("page position X: "+(e.pageX-15));
+				// console.log($('#draw').width());
+				// console.log(((e.pageX -15)/$('#draw').width()));
+				// console.log("page position Y: "+(e.pageY-70));
+				// console.log($('#draw').height())
+				// console.log("mouseX: "+mouseX);
+				// console.log("mouseY: "+mouseY);
 				paint = true;
-				addClick(e.pageX - this.offsetLeft-15, e.pageY - this.offsetTop-70);
-				redraw();
+				addClick(mouseX,mouseY);
+				resizeCanvas();
 			});
 
 
 			$('#draw').mousemove(function(e){
 				if(paint){
-					addClick(e.pageX - this.offsetLeft-15, e.pageY - this.offsetTop-70, true);
-					redraw();
+					addClick(e.pageX-15, e.pageY-70, true);
+					resizeCanvas();
 				}
 			});
 
@@ -56,25 +64,31 @@ angular.module('nodedrawApp')
 			$('#draw').mouseleave(function(e){
 				paint = false;
 			});
+			function resizeCanvas() {
+				c.width = $('#draw').width();
+				c.height = $('#draw').height();
+				function redraw(){
+  					// ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
 
-			function redraw(){
-  				// ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
-
-  				ctx.strokeStyle = "#df4b26";
-  				ctx.lineJoin = "round";
-  				ctx.lineWidth = 5;
-  				for(var i=0; i < clickX.length; i++) {	
-  					ctx.beginPath();
-  					if(clickDrag[i] && i){
-  						ctx.moveTo(clickX[i-1], clickY[i-1]);
-  					}else{
-  						ctx.moveTo(clickX[i]-1, clickY[i]);
+  					ctx.strokeStyle = "#df4b26";
+  					ctx.lineJoin = "round";
+  					ctx.lineWidth = 5;
+  					for(var i=0; i < clickX.length; i++) {	
+  						ctx.beginPath();
+  						if(clickDrag[i] && i){
+  							ctx.moveTo(clickX[i-1], clickY[i-1]);
+  						}else{
+  							ctx.moveTo(clickX[i]-1, clickY[i]);
+  						}
+  						ctx.lineTo(clickX[i], clickY[i]);
+  						ctx.closePath();
+  						ctx.stroke();
   					}
-  					ctx.lineTo(clickX[i], clickY[i]);
-  					ctx.closePath();
-  					ctx.stroke();
   				}
+  				redraw();
+
   			}
+  			resizeCanvas();
   		}
 
   	}
@@ -144,10 +158,10 @@ angular.module('nodedrawApp')
 
   	socketio.on('joinInGame',function()
   	{
-		socketio.emit('getLobbyTime');
+  		socketio.emit('getLobbyTime');
   		socketio.emit('getPlayerStatus');
   		$scope.state=1;
-	});
+  	});
 
   	socketio.on('setClientStatus',function(status)
   	{
