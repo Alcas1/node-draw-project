@@ -2,6 +2,7 @@
 var connected=false;
 angular.module('nodedrawApp')
 .controller('GameCtrl', function ($scope, $http, $location, Auth,User) {
+	
 	var socketio = io('', {
 		path: '/socket.io-client'
 	});
@@ -48,6 +49,8 @@ angular.module('nodedrawApp')
 
 	});
 
+
+
 	$("#userMsg").keypress(function (e) {
 		if(e.which == 13) {
 			socketio.emit('sendChat',$(this).val());
@@ -61,20 +64,30 @@ angular.module('nodedrawApp')
 			$('#messages-chat').append($('<li>').text(msg));
 			$("#messages-chat").scrollTop($("#messages-chat")[0].scrollHeight);
 		});
+		socketio.on('updateTime',function(seconds)
+		{
+			$scope.state=1;
+			$scope.timeLeft=seconds;
+			$scope.$apply();
+		});
+		socketio.on('joinInGame',function()
+		{
+			$scope.state=1;
+		});
 		connected=true;
 	}
 	$scope.playerReady=function(){
 		// socketio.emit('updateChat','omg');
 		if($scope.Ready==='Start')
 		{
-			$scope.state=1;
 			socketio.emit('startGame')
 		}
 		else{
 
-
 			socketio.emit('playerStatusUpdate',1);
 		}
 	}
+
+	
 
 });

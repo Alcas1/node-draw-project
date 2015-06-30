@@ -98,6 +98,22 @@ textarea#userMsg{
 
 #draw-game{
 	position: absolute;
+	width: -moz-calc(90% - 150px);
+    width: -webkit-calc(90% - 150px);
+    width: calc(90% - 150px);
+}
+#timer{
+	position:absolute;
+	/*right: -moz-calc(10% + 150px);
+    right: -webkit-calc(10% + 150px);
+    right: calc(10% + 150px);*/
+    top:0px;
+    right:0px;
 }
 
+#draw{
+	z-index: 1000;
+	position: absolute;
+	box-shadow: 0px 2px 2px rgba(43, 59, 93, 0.29);
+}
 

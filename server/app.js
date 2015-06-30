@@ -272,6 +272,10 @@ socketio.sockets.on('connection', function(socket) {
 				}
 			}
 			curLobby.users=toPush;
+			if(curLobby.state==='#0091ea')
+			{
+				socket.emit('joinInGame');
+			}
 		}
 		socketio.sockets.in(name).emit('chatMessage',socket.user.name+' has Joined');
 	});
@@ -303,6 +307,21 @@ socketio.sockets.on('connection', function(socket) {
 		}
 		socket.status=2;
 		socket.state=1;
+		var seconds=45;
+		var timer=setInterval(function(){
+			socketio.sockets.in(socket.room).emit('updateTime', seconds); 
+			seconds--;
+			if(seconds===-1)
+			{
+				clearInterval(timer);
+			}
+		}, 1000);
+
+
+
+
+
+
 		updateLobby(socket);
 	});
 
@@ -332,13 +351,12 @@ socketio.sockets.on('connection', function(socket) {
 			{
 				socket.toDelete=true;
 			}
+
 			updateLobby(socket);
 			socket.leave(socket.room);
-			socketio.sockets.in(name).emit('chatMessage',socket.user.name+' has Disconnected');
+			socketio.sockets.in(socket.room).emit('chatMessage',socket.user.name+' has Disconnected');
 			socket.room=null;
 		}
-		console.log('omfg');
-
 	});
 
 });

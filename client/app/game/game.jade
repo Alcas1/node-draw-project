@@ -1,5 +1,10 @@
 div(ng-include='"components/navbar/navbar.html"')
 div(ng-include='"components/rightbar/rightbar.html"')
+//- script(type="text/paperscript", src="'components/js/draw.js'", canvas="draw")
+
+
+//- canvas#draw(resize="true")
+//- script(type="text/javascript" src="assets/draw.js" canvas="draw")
 
 .container
 	.game-container
@@ -8,10 +13,8 @@ div(ng-include='"components/rightbar/rightbar.html"')
 		#draw-game(ng-show='state===1')
 			|OMG DRAW
 			#timer
-				|45
-
-
-
+				|{{timeLeft}}
+		
 		button.ready(ng-click='playerReady()' ng-show='state===0')
 			|{{Ready}}
 		.messages
