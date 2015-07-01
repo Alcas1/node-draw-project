@@ -1,10 +1,8 @@
 'use strict';
 
 angular.module('nodedrawApp')
-.controller('RightbarCtrl', function ($scope, $location, Auth) {
-  var socketio = io('', {
-    path: '/socket.io-client'
-  });
+.controller('RightbarCtrl', function ($scope, $location, Auth,socket) {
+  var socketio = socket.socket;
 
   $scope.state=0;
   $scope.lobbies=[];

@@ -1,15 +1,13 @@
 'use strict';
 
 angular.module('nodedrawApp')
-  .controller('LoginCtrl', function ($scope, $location, Auth, User) {
+  .controller('LoginCtrl', function ($scope, $location, Auth, User,socket) {
     $scope.user = {};
     $scope.errors = {};
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.isAdmin = Auth.isAdmin;
     $scope.getCurrentUser = Auth.getCurrentUser;
-    var socketio = io('', {
-      path: '/socket.io-client'
-    });
+    var socketio = socket.socket;
     $scope.login = function(form) {
       $scope.submitted = true;
 

@@ -339,6 +339,10 @@ socketio.sockets.on('connection', function(socket) {
 			if(lobbies[i].name===socket.room)
 			{
 				lobbies[i].time=seconds;
+				if(seconds===0)
+				{
+					socketio.sockets.in(socket.room).emit('gameFinish');
+				}
 			}
 		}
 	});

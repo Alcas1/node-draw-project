@@ -1,13 +1,11 @@
 'use strict';
 
 angular.module('nodedrawApp')
-  .controller('LobbiesCtrl', function ($scope, $http, $location) {
+  .controller('LobbiesCtrl', function ($scope, $http, $location,socket) {
 
     $scope.lobbies=[];
     var allLobbies;
-	var socketio = io('', {
-      path: '/socket.io-client'
-    });
+	var socketio = socket.socket;
     socketio.emit('getLobbyList',true);
     socketio.on('updateLobbyList',function(lobbies){
     	allLobbies=lobbies;

@@ -1,44 +1,46 @@
 
 var connected=false;
 angular.module('nodedrawApp')
-.controller('GameCtrl', function ($scope, $http, $location, Auth,User) {
-	var socketio = io('', {
-		path: '/socket.io-client'
-	});
-	$scope.playerStatus=1;
-	$scope.state=0;
-	var clickX = new Array();
-	var clickY = new Array();
-	var clickDrag = new Array();
-	var paint;
+.controller('GameCtrl', function ($scope, $http, $location, Auth,User,socket) {
+	// var socketio = io('', {
+	// 	path: '/socket.io-client'
+	// });
 
-	function addClick(x, y, dragging)
-	{
-		clickX.push(x);
-		clickY.push(y);
-		clickDrag.push(dragging);
-	}
+var socketio=socket.socket;
+$scope.playerStatus=1;
+$scope.state=0;
+var clickX = new Array();
+var clickY = new Array();
+var clickDrag = new Array();
+var paint;
 
-	var c = document.getElementById("draw");
-	c.style.width ='100%';
-	c.style.height='100%';
-	c.width  = c.offsetWidth;
-	c.height = c.offsetHeight;
-	var ctx = c.getContext("2d");
-	window.addEventListener('resize', canvasEvents($scope.playerStatus), false);
+function addClick(x, y, dragging)
+{
+  clickX.push(x);
+  clickY.push(y);
+  clickDrag.push(dragging);
+}
+
+var c = document.getElementById("draw");
+c.style.width ='100%';
+c.style.height='100%';
+c.width  = c.offsetWidth;
+c.height = c.offsetHeight;
+var ctx = c.getContext("2d");
+window.addEventListener('resize', canvasEvents($scope.playerStatus), false);
 
 
 
-	function canvasEvents(status)
-	{
+function canvasEvents(status)
+{
 
-		if(status===2)
-		{
-			$('#draw').mousedown(function(e){
+  if(status===2)
+  {
+   $('#draw').mousedown(function(e){
 
-				var mouseX = ((e.pageX -15)/$('#draw').width())*$('#draw').width();
-				var mouseY = ((e.pageY -70)/$('#draw').height())*$('#draw').height();
-				
+    var mouseX = ((e.pageX -15)/$('#draw').width())*$('#draw').width();
+    var mouseY = ((e.pageY -70)/$('#draw').height())*$('#draw').height();
+
 				// console.log("page position X: "+(e.pageX-15));
 				// console.log($('#draw').width());
 				// console.log(((e.pageX -15)/$('#draw').width()));
@@ -52,24 +54,24 @@ angular.module('nodedrawApp')
 			});
 
 
-			$('#draw').mousemove(function(e){
-				if(paint){
-					addClick(e.pageX-15, e.pageY-70, true);
-					resizeCanvas();
-				}
-			});
+   $('#draw').mousemove(function(e){
+    if(paint){
+     addClick(e.pageX-15, e.pageY-70, true);
+     resizeCanvas();
+   }
+ });
 
-			$('#draw').mouseup(function(e){
-				paint = false;
-			});
+   $('#draw').mouseup(function(e){
+    paint = false;
+  });
 
-			$('#draw').mouseleave(function(e){
-				paint = false;
-			});
-			function resizeCanvas() {
-				c.width = $('#draw').width();
-				c.height = $('#draw').height();
-				function redraw(){
+   $('#draw').mouseleave(function(e){
+    paint = false;
+  });
+   function resizeCanvas() {
+    c.width = $('#draw').width();
+    c.height = $('#draw').height();
+    function redraw(){
   					// ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
 
   					ctx.strokeStyle = "#df4b26";
@@ -97,29 +99,32 @@ angular.module('nodedrawApp')
 
   	var curLobby;
   	socketio.emit('getRoom');
-  	socketio.on('updateRoom',function(nLobby){
-  		$scope.lobby=nLobby;
-  		if(socketio.id===nLobby.adminId)
-  		{
-  			$scope.Ready='Start';
-  		}
-  		else
-  		{
-  			$scope.Ready='Ready';
-  		}
-  		$scope.$apply();
-  		curLobby=nLobby;
+  	// console.log(socket.socket);
 
-  	});
-  	socketio.on('connect', function(){
-  		if(Auth.isLoggedIn())
-  		{
-  			$scope.getCurrentUser=User.get();
-  			$scope.getCurrentUser.$promise.then(function(data) {
-  				socketio.emit('updateUser',data);
-  			});
+  	
+  	$("#userMsg").keypress(function (e) {
+  		if(e.which == 13) {
+  			socketio.emit('sendChat',$(this).val());
+  			$(this).val("");
+  			e.preventDefault();
   		}
-  		else{
+  	});
+
+
+  	
+
+
+  	
+
+    socketio.on('connect', function(){
+     if(Auth.isLoggedIn())
+     {
+      $scope.getCurrentUser=User.get();
+      $scope.getCurrentUser.$promise.then(function(data) {
+       socketio.emit('updateUser',data);
+     });
+    }
+    else{
 			//PROMPT FOR USERNAME
 			var curUser ={
 				name: "Guest "+socketio.id.substring(0,5),
@@ -134,65 +139,76 @@ angular.module('nodedrawApp')
 		}
 
 	});
+    socketio.on('updateRoom',function(nLobby){
+     $scope.lobby=nLobby;
+     console.log(nLobby);
+     console.log(this.id);
+     if(this.id===nLobby.adminId)
+     {
+      console.log('start');
+      $scope.Ready='Start';
+    }
+    else
+    {
+      $scope.Ready='Ready';
+    }
+    console.log('apply');
+    $scope.$apply();
+    curLobby=nLobby;
+
+  });
+    socketio.on('incrementSecond',function()
+    {
+
+     socketio.emit('setGameTime',$scope.timeLeft--);
+     $scope.$apply();
+   });
+
+    socketio.on('setClientTime',function(time){
+     $scope.timeLeft=time;
+   });
+
+
+    socketio.on('gameFinish',function(){
+     $scope.state=2;
+   });
+
+    socketio.on('joinInGame',function()
+    {
+     socketio.emit('getLobbyTime');
+     socketio.emit('getPlayerStatus');
+     $scope.state=1;
+   });
 
 
 
-  	$("#userMsg").keypress(function (e) {
-  		if(e.which == 13) {
-  			socketio.emit('sendChat',$(this).val());
-  			$(this).val("");
-  			e.preventDefault();
-  		}
-  	});
+    socketio.on('setClientStatus',function(status)
+    {
+     $scope.playerStatus=status;
+     canvasEvents(status);
+   });
 
-  	socketio.on('incrementSecond',function()
-  	{
-
-  		socketio.emit('setGameTime',$scope.timeLeft--);
-		// $scope.timeLeft--;
-		$scope.$apply();
-	});
-
-  	socketio.on('setClientTime',function(time){
-  		$scope.timeLeft=time;
-  	});
-
-  	socketio.on('joinInGame',function()
-  	{
-  		socketio.emit('getLobbyTime');
-  		socketio.emit('getPlayerStatus');
-  		$scope.state=1;
-  	});
-
-  	socketio.on('setClientStatus',function(status)
-  	{
-  		$scope.playerStatus=status;
-  		canvasEvents(status);
-  	});
-
-  	socketio.on('startClientGame',function(){
-  		socketio.emit('getLobbyTime');
-  		socketio.emit('getPlayerStatus');
-  		$scope.state=1;
-  	});
-
-  	if(!connected)
-  	{
-  		socketio.on('chatMessage',function(msg){
-  			$('#messages-chat').append($('<li>').text(msg));
-  			$("#messages-chat").scrollTop($("#messages-chat")[0].scrollHeight);
-  		});
+    socketio.on('startClientGame',function(){
+     socketio.emit('getLobbyTime');
+     socketio.emit('getPlayerStatus');
+     $scope.state=1;
+   });
 
 
-  		connected=true;
-  	}
-  	$scope.playerReady=function(){
-		// socketio.emit('updateChat','omg');
-		if($scope.Ready==='Start')
-		{
-			socketio.emit('setGameTime',45);
-			socketio.emit('getLobbyTime');
-			socketio.emit('startGame');
+    socketio.on('chatMessage',function(msg){
+     $('#messages-chat').append($('<li>').text(msg));
+     $("#messages-chat").scrollTop($("#messages-chat")[0].scrollHeight);
+   });
+
+  		// connected=true;
+
+     $scope.playerReady=function(){
+      console.log(socket.socket);
+      if($scope.Ready==='Start')
+      {
+       socketio.emit('setGameTime',45);
+       socketio.emit('getLobbyTime');
+       socketio.emit('startGame');
 			// $scope.state=1;
 		}
 		else{
