@@ -69,6 +69,10 @@ angular.module('nodedrawApp')
     } 
   };
 
+  $scope.$on('$destroy', function (event) {
+    socketio.removeAllListeners();
+  });
+
   $scope.search = '';
   var regex;
   $scope.$watch('search', function (value) {

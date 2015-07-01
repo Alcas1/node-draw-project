@@ -200,23 +200,24 @@ function canvasEvents(status)
      $("#messages-chat").scrollTop($("#messages-chat")[0].scrollHeight);
    });
 
-  		// connected=true;
-
-     $scope.playerReady=function(){
+     $scope.$on('$destroy', function (event) {
+        socketio.removeAllListeners();
+    });
+    $scope.playerReady=function(){
       console.log(socket.socket);
       if($scope.Ready==='Start')
       {
        socketio.emit('setGameTime',45);
        socketio.emit('getLobbyTime');
        socketio.emit('startGame');
-			// $scope.state=1;
-		}
-		else{
+			 // $scope.state=1;
+      }
+      else{
 
-			socketio.emit('playerStatusUpdate',1);
-		}
-	}
+       socketio.emit('playerStatusUpdate',1);
+     }
+   }
 
-	
 
-});
+
+ });

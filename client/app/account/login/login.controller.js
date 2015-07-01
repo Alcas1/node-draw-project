@@ -32,5 +32,7 @@ angular.module('nodedrawApp')
         });
       }
     };
-
+    $scope.$on('$destroy', function (event) {
+        socketio.removeAllListeners();
+    });
   });

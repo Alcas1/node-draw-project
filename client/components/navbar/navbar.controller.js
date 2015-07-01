@@ -41,4 +41,8 @@ angular.module('nodedrawApp')
   $scope.isActive = function(route) {
     return route === $location.path();
   };
+
+  $scope.$on('$destroy', function (event) {
+        socketio.removeAllListeners();
+    });
 });

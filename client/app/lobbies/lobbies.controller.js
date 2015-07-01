@@ -20,4 +20,8 @@ angular.module('nodedrawApp')
     	$location.path('/game');
     };
 
+    $scope.$on('$destroy', function (event) {
+        socketio.removeAllListeners();
+    });
+
   });
