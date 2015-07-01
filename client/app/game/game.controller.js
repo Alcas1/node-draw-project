@@ -165,6 +165,7 @@ function canvasEvents(status)
    });
 
     socketio.on('setClientTime',function(time){
+      console.log(time);
      $scope.timeLeft=time;
    });
 
@@ -200,8 +201,8 @@ function canvasEvents(status)
      $("#messages-chat").scrollTop($("#messages-chat")[0].scrollHeight);
    });
 
-     $scope.$on('$destroy', function (event) {
-        socketio.removeAllListeners();
+    $scope.$on('$destroy', function (event) {
+      socketio.removeAllListeners();
     });
     $scope.playerReady=function(){
       console.log(socket.socket);
