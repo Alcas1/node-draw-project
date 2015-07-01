@@ -102,6 +102,7 @@ textarea#userMsg{
 	}
 
 	.messages{
+		border-top: 1px solid #DDD;
 		bottom:0px;
 		height:120px;
 	}

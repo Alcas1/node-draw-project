@@ -14,19 +14,30 @@ angular.module('nodedrawApp')
   {colorName:'Brown',colorHex:'#795548'},
   {colorName:'Black',colorHex:'#212121'}];
   $scope.Colors=allColors;
+  var curColor=allColors[9].colorHex;
   var socketio=socket.socket;
   $scope.playerStatus=1;
   $scope.state=0;
   var clickX = new Array();
   var clickY = new Array();
   var clickDrag = new Array();
+  var clickColor = new Array();
   var paint;
 
-  function addClick(x, y, dragging)
+
+  $scope.switchColor=function(colorHex){
+    curColor=colorHex;
+  }
+
+
+
+
+  function addClick(x, y, dragging, color)
   {
     clickX.push(x);
     clickY.push(y);
     clickDrag.push(dragging);
+    clickColor.push(color);
   }
 
   var c = document.getElementById("draw");
@@ -48,14 +59,6 @@ angular.module('nodedrawApp')
 
       var mouseX = ((e.pageX -15)/$('#draw').width())*$('#draw').width();
       var mouseY = ((e.pageY -70)/$('#draw').height())*$('#draw').height();
-
-				// console.log("page position X: "+(e.pageX-15));
-				// console.log($('#draw').width());
-				// console.log(((e.pageX -15)/$('#draw').width()));
-				// console.log("page position Y: "+(e.pageY-70));
-				// console.log($('#draw').height())
-				// console.log("mouseX: "+mouseX);
-				// console.log("mouseY: "+mouseY);
 				paint = true;
 				addClick(mouseX,mouseY);
 				resizeCanvas();
@@ -64,7 +67,9 @@ angular.module('nodedrawApp')
 
      $('#draw').mousemove(function(e){
       if(paint){
-       addClick(e.pageX-15, e.pageY-70, true);
+       var mouseX = ((e.pageX -15)/$('#draw').width())*$('#draw').width();
+       var mouseY = ((e.pageY -70)/$('#draw').height())*$('#draw').height();
+       addClick(mouseX, mouseY, true,curColor);
        resizeCanvas();
      }
    });
@@ -82,11 +87,12 @@ angular.module('nodedrawApp')
       function redraw(){
   					// ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
 
-  					ctx.strokeStyle = "#df4b26";
+  					// ctx.strokeStyle = curColor;
   					ctx.lineJoin = "round";
   					ctx.lineWidth = 5;
   					for(var i=0; i < clickX.length; i++) {	
   						ctx.beginPath();
+              ctx.strokeStyle = clickColor[i];
   						if(clickDrag[i] && i){
   							ctx.moveTo(clickX[i-1], clickY[i-1]);
   						}else{
@@ -218,13 +224,13 @@ angular.module('nodedrawApp')
        socketio.emit('setGameTime',45);
        socketio.emit('getLobbyTime');
        socketio.emit('startGame');
-			 // $scope.state=1;
-      }
-      else{
+     }
+     else{
 
        socketio.emit('playerStatusUpdate',1);
      }
    }
+
 
 
 
