@@ -18,6 +18,7 @@ angular.module('nodedrawApp')
   var socketio=socket.socket;
   $scope.playerStatus=1;
   $scope.state=0;
+  var emitted=0;
   var clickX = new Array();
   var clickY = new Array();
   var clickDrag = new Array();
@@ -59,10 +60,10 @@ angular.module('nodedrawApp')
 
       var mouseX = ((e.pageX -15)/$('#draw').width())*$('#draw').width();
       var mouseY = ((e.pageY -70)/$('#draw').height())*$('#draw').height();
-				paint = true;
-				addClick(mouseX,mouseY);
-				resizeCanvas();
-			});
+      paint = true;
+      addClick(mouseX,mouseY);
+      resizeCanvas();
+    });
 
 
      $('#draw').mousemove(function(e){
@@ -92,28 +93,27 @@ angular.module('nodedrawApp')
   					ctx.lineWidth = 5;
   					for(var i=0; i < clickX.length; i++) {	
               ctx.strokeStyle = clickColor[i+1];
-  						ctx.beginPath();
-  						if(clickDrag[i] && i){
-  							ctx.moveTo(clickX[i-1], clickY[i-1]);
-  						}else{
-  							ctx.moveTo(clickX[i]-1, clickY[i]);
-  						}
-  						ctx.lineTo(clickX[i], clickY[i]);
-  						ctx.closePath();
-  						ctx.stroke();
-  					}
-  				}
-  				redraw();
-  			}
-  			resizeCanvas();
-  		}
+              ctx.beginPath();
+              if(clickDrag[i] && i){
+               ctx.moveTo(clickX[i-1], clickY[i-1]);
+             }else{
+               ctx.moveTo(clickX[i]-1, clickY[i]);
+             }
+             ctx.lineTo(clickX[i], clickY[i]);
+             ctx.closePath();
+             ctx.stroke();
+           }
+         }
+         redraw();
+       }
+       resizeCanvas();
+     }
 
-  	}
+   }
 
 
-  	var curLobby;
-  	socketio.emit('getRoom');
-  	// console.log(socket.socket);
+   var curLobby;
+   socketio.emit('getRoom');
 
   	
   	$("#userMsg").keypress(function (e) {
@@ -125,7 +125,17 @@ angular.module('nodedrawApp')
   	});
 
 
-  	
+  	socketio.on('resetRoom',function(){
+      curColor=allColors[9].colorHex;
+      $scope.playerStatus=1;
+      $scope.state=0;
+      emitted=0;
+      clickX = [];
+      clickY = [];
+      clickDrag = [];
+      clickColor = [];
+      paint=null;
+    });
 
 
   	
@@ -183,16 +193,29 @@ angular.module('nodedrawApp')
    });
 
 
-    socketio.on('gameFinish',function(){
-     $scope.state=2;
+    socketio.on('gameFinish',function(curLobby){
+      console.log(this.id+"  LOL   "+curLobby.adminId);
+      if(this.id===curLobby.adminId&&!emitted)
+      {
+        emitted=true;
+        socketio.emit('updateChat',"Let's See What Everyone Drew!");
+      }
+      $scope.state=2;
    });
 
-    socketio.on('joinInGame',function()
+    socketio.on('joinInGame',function(curLobby)
     {
-     socketio.emit('getLobbyTime');
-     socketio.emit('getPlayerStatus');
-     $scope.state=1;
-   });
+      socketio.emit('getLobbyTime');
+      socketio.emit('getPlayerStatus');
+      if(curLobby.time<=0)
+      {
+        $scope.state=2;
+      }
+      else
+      {
+        $scope.state=1;
+      }
+    });
 
 
 

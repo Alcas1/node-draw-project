@@ -283,7 +283,7 @@ socketio.sockets.on('connection', function(socket) {
 			if(curLobby.state==='#0091ea')
 			{
 				// console.log('in game');
-				socket.emit('joinInGame');
+				socket.emit('joinInGame',curLobby);
 			}
 		}
 		socketio.sockets.in(name).emit('chatMessage',socket.user.name+' has Joined');
@@ -297,6 +297,8 @@ socketio.sockets.on('connection', function(socket) {
 		socket.status=status;
 		updateLobby(socket);
 	});
+
+	//socket.on('resetRoom')
 
 	socket.on('startGame',function(){
 		var curLobby=getLobby(socket.room);
@@ -341,7 +343,7 @@ socketio.sockets.on('connection', function(socket) {
 				lobbies[i].time=seconds;
 				if(seconds===0)
 				{
-					socketio.sockets.in(socket.room).emit('gameFinish');
+					socketio.sockets.in(socket.room).emit('gameFinish',lobbies[i]);
 				}
 			}
 		}
