@@ -44,7 +44,7 @@
 	position:absolute;
 	/*border: 3px solid #DDD;*/
 	right:0px;
-	height:100%;
+	/*height:100%;*/
 	width: -moz-calc(10% + 150px);
 	width: -webkit-calc(10% + 150px);
 	width: calc(10% + 150px);
@@ -59,19 +59,13 @@
 }
 
 #messages-chat{
-	height: -moz-calc(100% - 105px);
-	height: -webkit-calc(100% - 105px);
-	height: calc(100% - 105px);
 	font-size: 14px;
 	padding-left:15px;
 	padding-right: 15px;
 	padding-top:10px;
-	padding-bottom: 8px;
 	list-style-type: none;
 	overflow-y: auto;
 	word-wrap: break-word;
-
-
 }
 #messages-chat li{
 	padding-bottom: 5px;
@@ -81,6 +75,7 @@ form#chat{
 	background-color: #EAEAEA;
 	height:50px;
 	border-bottom-right-radius: 4px;
+	bottom:0px;
 }
 
 textarea#userMsg{
@@ -98,19 +93,105 @@ textarea#userMsg{
 
 @media (min-width: 330px) {
 
+	textarea#userMsg{
+		height:20px;
+	}
+
+	#draw{
+		border-bottom: 1px solid #DDD;
+	}
+
+	.messages{
+		bottom:0px;
+		height:120px;
+	}
+
+	.messages-title{
+		display: none;
+	}
+	#messages-chat{
+		height:85px;
+		margin-bottom: 0px;
+	}
+
+	form#chat{
+		margin-top: 5px;
+		height:30px;
+	}
+
 	#draw-game{
 		position: absolute;
-		width: -moz-calc(90% - 150px);
+		/*width: -moz-calc(90% - 150px);
 		width: -webkit-calc(90% - 150px);
-		width: calc(90% - 150px);
+		width: calc(90% - 150px);*/
+		width: 100%;
 		height: -moz-calc(100% - 120px);
 		height: -webkit-calc(100% - 120px);
 		height: calc(100% - 120px);
+	}
+	#colors{
+		position: absolute;
+		bottom: 0px;
+		width: -moz-calc(90% - 150px);
+		width: -webkit-calc(90% - 150px);
+		width: calc(90% - 150px);
+		height:120px;
+	}
+
+
+	#colorBox{
+		box-sizing:content-box;
+		position: relative;
+		width: 20%;
+		height: 50%;
+		display: inline-block;
+	}
+	#colorBox:nth-child(n+6){
+		margin-top:-5px;
+	}
+
+
+	#colorBox:nth-child(6){
+		border-bottom-left-radius: 8px;
+	}
+
+	#color{
+		border-bottom-left-radius: inherit;
+		box-sizing:content-box;
+		width: 100%;
+		height: 100%;
 	}
 }
 
 
 @media (min-width: 1000px) {
+
+	textarea#userMsg{
+		height:40px;
+	}
+	.messages{
+		height:100%;
+	}
+
+	.messages-title{
+		display: block;
+		font-size: 18px;
+		padding-left:20px;
+		padding-top:10px;
+		padding-bottom: 8px;
+		border-bottom: 1px solid #DDD;
+	}
+	#messages-chat{
+		height: -moz-calc(100% - 105px);
+		height: -webkit-calc(100% - 105px);
+		height: calc(100% - 105px);
+		padding-bottom: 8px;
+		margin-bottom: 10px;
+	}
+
+	form#chat{
+		height:50px;
+	}
 
 	#draw-game{
 		position: absolute;
@@ -120,6 +201,34 @@ textarea#userMsg{
 		height: -moz-calc(100% - 60px);
 		height: -webkit-calc(100% - 60px);
 		height: calc(100% - 60px);
+	}
+	#colors{
+		position: absolute;
+		bottom: 0px;
+		width: -moz-calc(90% - 150px);
+		width: -webkit-calc(90% - 150px);
+		width: calc(90% - 150px);
+		height: 60px;
+	}
+	#colorBox{
+		position: relative;
+		width: 10%;
+		height: 100%;
+		display: inline-block;
+	}
+
+	#colorBox:first-child{
+		border-bottom-left-radius: 8px;
+	}
+
+	#colorBox:nth-child(6){
+		border-bottom-left-radius: 0px;
+	}
+
+	#color{
+		border-bottom-left-radius: inherit;
+		width: 100%;
+		height: 100%;
 	}
 }
 
@@ -134,6 +243,8 @@ textarea#userMsg{
     top:5px;
     right:10px;
 }
+
+
 
 #draw{
 	/*border-bottom-left-radius: 8px;*/

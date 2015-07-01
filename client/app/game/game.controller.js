@@ -2,44 +2,52 @@
 var connected=false;
 angular.module('nodedrawApp')
 .controller('GameCtrl', function ($scope, $http, $location, Auth,User,socket) {
-	// var socketio = io('', {
-	// 	path: '/socket.io-client'
-	// });
+  var allColors=[
+  {colorName:'Red',colorHex:'#F44336'},
+  {colorName:'Orange',colorHex:'#FF9800'},
+  {colorName:'Yellow',colorHex:'#FFEB3B'},
+  {colorName:'Green',colorHex:'#4CAF50'},
+  {colorName:'Blue',colorHex:'#2196F3'},
+  {colorName:'Purple',colorHex:'#9C27B0'},
+  {colorName:'Pink',colorHex:'#E91E63'},
+  {colorName:'Grey',colorHex:'#9E9E9E'},
+  {colorName:'Brown',colorHex:'#795548'},
+  {colorName:'Black',colorHex:'#212121'}];
+  $scope.Colors=allColors;
+  var socketio=socket.socket;
+  $scope.playerStatus=1;
+  $scope.state=0;
+  var clickX = new Array();
+  var clickY = new Array();
+  var clickDrag = new Array();
+  var paint;
 
-var socketio=socket.socket;
-$scope.playerStatus=1;
-$scope.state=0;
-var clickX = new Array();
-var clickY = new Array();
-var clickDrag = new Array();
-var paint;
-
-function addClick(x, y, dragging)
-{
-  clickX.push(x);
-  clickY.push(y);
-  clickDrag.push(dragging);
-}
-
-var c = document.getElementById("draw");
-c.style.width ='100%';
-c.style.height='100%';
-c.width  = c.offsetWidth;
-c.height = c.offsetHeight;
-var ctx = c.getContext("2d");
-window.addEventListener('resize', canvasEvents($scope.playerStatus), false);
-
-
-
-function canvasEvents(status)
-{
-
-  if(status===2)
+  function addClick(x, y, dragging)
   {
-   $('#draw').mousedown(function(e){
+    clickX.push(x);
+    clickY.push(y);
+    clickDrag.push(dragging);
+  }
 
-    var mouseX = ((e.pageX -15)/$('#draw').width())*$('#draw').width();
-    var mouseY = ((e.pageY -70)/$('#draw').height())*$('#draw').height();
+  var c = document.getElementById("draw");
+  c.style.width ='100%';
+  c.style.height='100%';
+  c.width  = c.offsetWidth;
+  c.height = c.offsetHeight;
+  var ctx = c.getContext("2d");
+  window.addEventListener('resize', canvasEvents($scope.playerStatus), false);
+
+
+
+  function canvasEvents(status)
+  {
+
+    if(status===2)
+    {
+     $('#draw').mousedown(function(e){
+
+      var mouseX = ((e.pageX -15)/$('#draw').width())*$('#draw').width();
+      var mouseY = ((e.pageY -70)/$('#draw').height())*$('#draw').height();
 
 				// console.log("page position X: "+(e.pageX-15));
 				// console.log($('#draw').width());
@@ -54,24 +62,24 @@ function canvasEvents(status)
 			});
 
 
-   $('#draw').mousemove(function(e){
-    if(paint){
-     addClick(e.pageX-15, e.pageY-70, true);
-     resizeCanvas();
-   }
- });
+     $('#draw').mousemove(function(e){
+      if(paint){
+       addClick(e.pageX-15, e.pageY-70, true);
+       resizeCanvas();
+     }
+   });
 
-   $('#draw').mouseup(function(e){
-    paint = false;
-  });
+     $('#draw').mouseup(function(e){
+      paint = false;
+    });
 
-   $('#draw').mouseleave(function(e){
-    paint = false;
-  });
-   function resizeCanvas() {
-    c.width = $('#draw').width();
-    c.height = $('#draw').height();
-    function redraw(){
+     $('#draw').mouseleave(function(e){
+      paint = false;
+    });
+     function resizeCanvas() {
+      c.width = $('#draw').width();
+      c.height = $('#draw').height();
+      function redraw(){
   					// ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
 
   					ctx.strokeStyle = "#df4b26";
@@ -127,7 +135,7 @@ function canvasEvents(status)
     else{
 			//PROMPT FOR USERNAME
 			var curUser ={
-				name: "Guest "+socketio.id.substring(0,5),
+				name: "Guest "+this.id.substring(0,5),
 				email: "",
 				role: "user",
 				tempScore:0,
@@ -165,7 +173,6 @@ function canvasEvents(status)
    });
 
     socketio.on('setClientTime',function(time){
-      console.log(time);
      $scope.timeLeft=time;
    });
 

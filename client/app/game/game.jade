@@ -14,6 +14,9 @@ div(ng-include='"components/rightbar/rightbar.html"')
 			#timer
 				{{timeLeft}}
 			canvas#draw
+		#colors
+			#colorBox(ng-repeat="Color in Colors" ng-show='state===1')
+				#color(ng-style="{'background-color':Color.colorHex}")
 		button.ready(ng-click='playerReady()' ng-show='state===0')
 			|{{Ready}}
 		.messages
