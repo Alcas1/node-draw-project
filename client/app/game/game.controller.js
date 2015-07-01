@@ -91,8 +91,8 @@ angular.module('nodedrawApp')
   					ctx.lineJoin = "round";
   					ctx.lineWidth = 5;
   					for(var i=0; i < clickX.length; i++) {	
+              ctx.strokeStyle = clickColor[i+1];
   						ctx.beginPath();
-              ctx.strokeStyle = clickColor[i];
   						if(clickDrag[i] && i){
   							ctx.moveTo(clickX[i-1], clickY[i-1]);
   						}else{
