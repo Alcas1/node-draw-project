@@ -38,6 +38,11 @@
 	-moz-user-select: none;
 }
 
+.ready:active{
+	box-shadow: 0px 0px 0px rgba(43, 59, 93, 0.29);
+}
+
+
 .messages{
 	
 	border-left: 2px solid #DDD;

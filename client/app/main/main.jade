@@ -4,10 +4,13 @@ div(ng-include='"components/rightbar/rightbar.html"')
   header#banner.hero-unit
     .container
       .title
-        p.lead PokeDraw Demo
+        p.lead SKETCH-IT! Demo
       .players
         p {{numUsers}}
   .container
+    .lobby-form
+      |<strong>WELCOME TO SKETCH-IT!</strong>
+
     form.lobby-form(ng-submit='createLobby(lobbyform)' name='lobbyform')
       label(style='center') LOBBY
       p.input-group
@@ -22,7 +25,6 @@ div(ng-include='"components/rightbar/rightbar.html"')
         p.error {{errors.other}}
     //- .input-group-btn
     //-  button.btn.btn-primary(ng-click='findLobby()') Find Lobby
-    form.lobby-form
 
 
 //- footer.footer

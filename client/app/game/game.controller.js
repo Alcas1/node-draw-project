@@ -224,6 +224,7 @@ angular.module('nodedrawApp')
        socketio.emit('setGameTime',45);
        socketio.emit('getLobbyTime');
        socketio.emit('startGame');
+       socketio.emit('updateChat',"Game Started!");
      }
      else{
 
