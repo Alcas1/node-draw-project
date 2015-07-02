@@ -18,7 +18,7 @@ angular.module('nodedrawApp')
   var socketio=socket.socket;
   $scope.playerStatus=1;
   $scope.state=0;
-  var emitted=0;
+  var emitted=false;
   var clickX = new Array();
   var clickY = new Array();
   var clickDrag = new Array();
@@ -115,32 +115,33 @@ angular.module('nodedrawApp')
    var curLobby;
    socketio.emit('getRoom');
 
-  	
-  	$("#userMsg").keypress(function (e) {
-  		if(e.which == 13) {
-  			socketio.emit('sendChat',$(this).val());
-  			$(this).val("");
-  			e.preventDefault();
-  		}
-  	});
+
+   $("#userMsg").keypress(function (e) {
+    if(e.which == 13) {
+     socketio.emit('sendChat',$(this).val());
+     $(this).val("");
+     e.preventDefault();
+   }
+ });
 
 
-  	socketio.on('resetRoom',function(){
-      curColor=allColors[9].colorHex;
-      $scope.playerStatus=1;
-      $scope.state=0;
-      emitted=0;
-      clickX = [];
-      clickY = [];
-      clickDrag = [];
-      clickColor = [];
-      paint=null;
-    });
+   socketio.on('resetRoom',function(){
+    console.log('omfg');
+    curColor=allColors[9].colorHex;
+    $scope.playerStatus=1;
+    $scope.state=0;
+    emitted=false;
+    clickX = [];
+    clickY = [];
+    clickDrag = [];
+    clickColor = [];
+    paint=null;
+  });
 
 
-  	
 
-    socketio.on('connect', function(){
+
+   socketio.on('connect', function(){
      if(Auth.isLoggedIn())
      {
       $scope.getCurrentUser=User.get();
@@ -163,99 +164,90 @@ angular.module('nodedrawApp')
 		}
 
 	});
-    socketio.on('updateRoom',function(nLobby){
+   socketio.on('updateRoom',function(nLobby){
      $scope.lobby=nLobby;
-     console.log(nLobby);
-     console.log(this.id);
      if(this.id===nLobby.adminId)
      {
-      console.log('start');
       $scope.Ready='Start';
     }
     else
     {
       $scope.Ready='Ready';
     }
-    console.log('apply');
     $scope.$apply();
     curLobby=nLobby;
 
   });
-    socketio.on('incrementSecond',function()
-    {
+   socketio.on('incrementSecond',function()
+   {
 
      socketio.emit('setGameTime',$scope.timeLeft--);
      $scope.$apply();
    });
 
-    socketio.on('setClientTime',function(time){
+   socketio.on('setClientTime',function(time){
      $scope.timeLeft=time;
    });
 
 
-    socketio.on('gameFinish',function(curLobby){
-      console.log(this.id+"  LOL   "+curLobby.adminId);
-      if(this.id===curLobby.adminId&&!emitted)
-      {
-        emitted=true;
-        socketio.emit('updateChat',"Let's See What Everyone Drew!");
-      }
+   socketio.on('gameFinish',function(){
+
+    $scope.state=2;
+  });
+
+   socketio.on('joinInGame',function(curLobby)
+   {
+    socketio.emit('getLobbyTime');
+    socketio.emit('getPlayerStatus');
+    if(curLobby.time<=0)
+    {
+      console.log('omg why');
       $scope.state=2;
-   });
-
-    socketio.on('joinInGame',function(curLobby)
+    }
+    else
     {
-      socketio.emit('getLobbyTime');
-      socketio.emit('getPlayerStatus');
-      if(curLobby.time<=0)
-      {
-        $scope.state=2;
-      }
-      else
-      {
-        $scope.state=1;
-      }
-    });
+      $scope.state=1;
+    }
+  });
 
 
 
-    socketio.on('setClientStatus',function(status)
-    {
+   socketio.on('setClientStatus',function(status)
+   {
      $scope.playerStatus=status;
      canvasEvents(status);
    });
 
-    socketio.on('startClientGame',function(){
+   socketio.on('startClientGame',function(){
      socketio.emit('getLobbyTime');
      socketio.emit('getPlayerStatus');
      $scope.state=1;
    });
 
 
-    socketio.on('chatMessage',function(msg){
+   socketio.on('chatMessage',function(msg){
      $('#messages-chat').append($('<li>').text(msg));
      $("#messages-chat").scrollTop($("#messages-chat")[0].scrollHeight);
    });
 
-    $scope.$on('$destroy', function (event) {
-      socketio.removeAllListeners();
-    });
-    $scope.playerReady=function(){
-      console.log(socket.socket);
-      if($scope.Ready==='Start')
-      {
-       socketio.emit('setGameTime',45);
-       socketio.emit('getLobbyTime');
-       socketio.emit('startGame');
-       socketio.emit('updateChat',"Game Started!");
-     }
-     else{
-
-       socketio.emit('playerStatusUpdate',1);
-     }
+   $scope.$on('$destroy', function (event) {
+    socketio.removeAllListeners();
+  });
+   $scope.playerReady=function(){
+    if($scope.Ready==='Start')
+    {
+     socketio.emit('setGameTime',10);
+     socketio.emit('getLobbyTime');
+     socketio.emit('startGame');
+     socketio.emit('updateChat',"Game Started!");
    }
+   else{
+
+     socketio.emit('playerStatusUpdate',1);
+   }
+ }
 
 
 
 
- });
+});

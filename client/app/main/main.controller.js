@@ -1,10 +1,8 @@
 'use strict';
 
 angular.module('nodedrawApp')
-.controller('MainCtrl', function ($scope, $http, $location, socket, Auth, User) {
-  var socketio = io('', {
-    path: '/socket.io-client'
-  });
+.controller('MainCtrl', function ($scope, $http, $location, Auth, User, socket) {
+  var socketio=socket.socket;
   $scope.lobbies = [];
   $scope.errors={};
   //$scope.numUsers='Players Online Now:  ';
@@ -14,7 +12,7 @@ angular.module('nodedrawApp')
     $scope.lobbies=nLobbies;
     $scope.$apply();
   });
-  
+
   $scope.createLobby = function(form) {
     $scope.submitted = true;
     if(form.$valid) {
@@ -22,10 +20,10 @@ angular.module('nodedrawApp')
       for(var i=0;i<$scope.lobbies.length;i++)
       {
         if(($scope.lobbyName)===($scope.lobbies[i].name))
-         { 
+        { 
           $scope.errors.other='A Lobby with that name has already been created!'
           return;
-         }
+        }
       }
 
       socketio.emit('leave');
@@ -50,7 +48,8 @@ angular.module('nodedrawApp')
   };
 
   $scope.$on('$destroy', function () {
-    socket.unsyncUpdates('lobby');
+    // socket.unsyncUpdates('lobby');
+    socketio.removeAllListeners();
   });
 
   socketio.on('connect', function(){
@@ -63,7 +62,7 @@ angular.module('nodedrawApp')
     }
     else{
       var curUser ={
-        name: "Guest "+socketio.id.substring(0,5),
+        name: "Guest "+this.id.substring(0,5),
         email: "",
         role: "user",
         tempScore:0,

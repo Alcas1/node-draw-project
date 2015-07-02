@@ -220,6 +220,7 @@ socketio.sockets.on('connection', function(socket) {
 			{
 				if(users[i].room===nLobby.name)
 				{
+					console.log('OMFG');
 					toPush.push({userId:users[i].id,userName:users[i].user.name,status:0});
 				}
 			}
@@ -282,7 +283,7 @@ socketio.sockets.on('connection', function(socket) {
 
 			if(curLobby.state==='#0091ea')
 			{
-				// console.log('in game');
+				 console.log('joined in game');
 				socket.emit('joinInGame',curLobby);
 			}
 		}
@@ -334,19 +335,26 @@ socketio.sockets.on('connection', function(socket) {
 		
 
 	});
-
 	socket.on('setGameTime',function(seconds){
+		
 		for(var i=0;i<lobbies.length;i++)
 		{
 			if(lobbies[i].name===socket.room)
 			{
 				lobbies[i].time=seconds;
 				if(seconds===0)
-				{
-					socketio.sockets.in(socket.room).emit('gameFinish',lobbies[i]);
+				{	
+					if(lobbies[i].adminId===socket.id)
+					{	
+						socketio.sockets.in(socket.room).emit('gameFinish');
+						
+						socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What Everyone Drew!");
+						//socketio.sockets.in(socket.room).emit('resetRoom');
+					}
 				}
 			}
 		}
+
 	});
 
 	socket.on('getLobbyTime',function(){
