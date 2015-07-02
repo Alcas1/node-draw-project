@@ -126,23 +126,22 @@ angular.module('nodedrawApp')
    var connected=false;
    if(!connected)
    {
-   socketio.on('joinInGame',function(curLobby)
-   {
-    console.log("OMFG");
-    socketio.emit('getLobbyTime');
-    socketio.emit('playerStatusUpdate',3);
-    console.log('Time: '+curLobby.time);
-    if(curLobby.time<=0)
-    {
-      $scope.state=2;
-    }
-    else
-    {
-      $scope.state=1;
-    }
-  });
-   connected=true;
-}
+     socketio.on('joinInGame',function(curLobby)
+     {
+      socketio.emit('getLobbyTime');
+      socketio.emit('playerStatusUpdate',3);
+      console.log('Time: '+curLobby.time);
+      if(curLobby.time<=0)
+      {
+        $scope.state=2;
+      }
+      else
+      {
+        $scope.state=1;
+      }
+    });
+     connected=true;
+   }
    socketio.on('resetRoom',function(){
     console.log('omfg nuggets');
     socketio.emit('playerStatusUpdate',0);
@@ -199,10 +198,12 @@ angular.module('nodedrawApp')
   });
    socketio.on('incrementSecond',function()
    {
-
-     socketio.emit('setGameTime',$scope.timeLeft--);
+    if(curLobby.state==='#0091ea')
+    {
+      socketio.emit('setGameTime',$scope.timeLeft--); 
      $scope.$apply();
-   });
+   }
+ });
 
    socketio.on('setClientTime',function(time){
      $scope.timeLeft=time;
@@ -242,7 +243,7 @@ angular.module('nodedrawApp')
    $scope.playerReady=function(){
     if($scope.Ready==='Start')
     {
-     socketio.emit('setGameTime',10);
+     socketio.emit('setGameTime',45);
      socketio.emit('getLobbyTime');
      socketio.emit('startGame');
      socketio.emit('updateChat',"Game Started!");
