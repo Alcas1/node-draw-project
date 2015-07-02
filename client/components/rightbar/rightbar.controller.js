@@ -57,6 +57,8 @@ angular.module('nodedrawApp')
     socketio.emit('getLobbyList');
     if(!(lobby.status==='#f44336'))
     {
+      console.log('omg');
+      
       socketio.emit('leave');
       socketio.emit('getRoom');
       socketio.emit('join',lobby.name);

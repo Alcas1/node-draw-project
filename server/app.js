@@ -220,7 +220,6 @@ socketio.sockets.on('connection', function(socket) {
 			{
 				if(users[i].room===nLobby.name)
 				{
-					console.log('OMFG');
 					toPush.push({userId:users[i].id,userName:users[i].user.name,status:0});
 				}
 			}
@@ -238,10 +237,15 @@ socketio.sockets.on('connection', function(socket) {
 			socket.prevRoom=socket.room;
 			var users=socketio.sockets.sockets;
 			var usersInRoom=0;
+			var usersInGame=0;
 			for(var i=0;i<users.length;i++)
 			{
 				if(users[i].room===socket.room)
 				{
+					if(users[i].user.status===2)
+					{
+						usersInGame++;
+					}
 					usersInRoom++;		
 				}
 			}
@@ -249,6 +253,21 @@ socketio.sockets.on('connection', function(socket) {
 			{	
 				console.log(usersInRoom);
 				socket.toDelete=true;
+			}
+			console.log(usersInGame);
+			if(usersInGame===1)
+			{
+
+				for(var i=0;i<lobbies.length;i++)
+				{
+					console.log(socket.room===lobbies[i].name);
+					if(socket.room===lobbies[i].name)
+					{
+						socket.state=null;
+						lobbies[i].state=null;
+						socketio.sockets.in(socket.room).emit('resetRoom');
+					}
+				}
 			}
 
 			socket.leave(socket.room);
@@ -285,6 +304,7 @@ socketio.sockets.on('connection', function(socket) {
 			{
 				 console.log('joined in game');
 				socket.emit('joinInGame',curLobby);
+				console.log('joined in game');
 			}
 		}
 		socketio.sockets.in(name).emit('chatMessage',socket.user.name+' has Joined');
@@ -298,8 +318,6 @@ socketio.sockets.on('connection', function(socket) {
 		socket.status=status;
 		updateLobby(socket);
 	});
-
-	//socket.on('resetRoom')
 
 	socket.on('startGame',function(){
 		var curLobby=getLobby(socket.room);
@@ -342,7 +360,7 @@ socketio.sockets.on('connection', function(socket) {
 			if(lobbies[i].name===socket.room)
 			{
 				lobbies[i].time=seconds;
-				if(seconds===0)
+				if(seconds===0&&lobbies[i].state)
 				{	
 					if(lobbies[i].adminId===socket.id)
 					{	

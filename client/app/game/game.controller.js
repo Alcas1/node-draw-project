@@ -123,12 +123,31 @@ angular.module('nodedrawApp')
      e.preventDefault();
    }
  });
-
-
+   var connected=false;
+   if(!connected)
+   {
+   socketio.on('joinInGame',function(curLobby)
+   {
+    console.log("OMFG");
+    socketio.emit('getLobbyTime');
+    socketio.emit('playerStatusUpdate',3);
+    console.log('Time: '+curLobby.time);
+    if(curLobby.time<=0)
+    {
+      $scope.state=2;
+    }
+    else
+    {
+      $scope.state=1;
+    }
+  });
+   connected=true;
+}
    socketio.on('resetRoom',function(){
-    console.log('omfg');
+    console.log('omfg nuggets');
+    socketio.emit('playerStatusUpdate',0);
     curColor=allColors[9].colorHex;
-    $scope.playerStatus=1;
+    $scope.playerStatus=0;
     $scope.state=0;
     emitted=false;
     clickX = [];
@@ -195,20 +214,7 @@ angular.module('nodedrawApp')
     $scope.state=2;
   });
 
-   socketio.on('joinInGame',function(curLobby)
-   {
-    socketio.emit('getLobbyTime');
-    socketio.emit('getPlayerStatus');
-    if(curLobby.time<=0)
-    {
-      console.log('omg why');
-      $scope.state=2;
-    }
-    else
-    {
-      $scope.state=1;
-    }
-  });
+
 
 
 

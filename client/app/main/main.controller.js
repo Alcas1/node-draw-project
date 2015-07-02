@@ -72,7 +72,7 @@ angular.module('nodedrawApp')
       };
       socketio.emit('updateUser',curUser);
     }
-
+    
   });
   socketio.on('userCountChange', function(numUsers){
     $scope.numUsers="Players Online Now: "+numUsers;
