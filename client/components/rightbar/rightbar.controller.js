@@ -57,6 +57,7 @@ angular.module('nodedrawApp')
     socketio.emit('getLobbyList');
     if(!(lobby.status==='#f44336'))
     {
+      $location.path('/game');
       console.log('omg');
       
       socketio.emit('leave');
@@ -67,7 +68,7 @@ angular.module('nodedrawApp')
       {
         socketio.emit('playerStatusUpdate',3);
       }
-      $location.path('/game');
+      
     } 
   };
 

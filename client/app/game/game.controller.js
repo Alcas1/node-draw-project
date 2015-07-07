@@ -125,25 +125,22 @@ angular.module('nodedrawApp')
      e.preventDefault();
    }
  });
-   var connected=false;
-   if(!connected)
+   socketio.on('joinInGame',function(curLobby)
    {
-     socketio.on('joinInGame',function(curLobby)
-     {
-      socketio.emit('getLobbyTime');
-      socketio.emit('playerStatusUpdate',3);
-      console.log('Time: '+curLobby.time);
-      if(curLobby.time<=0)
-      {
-        $scope.state=2;
-      }
-      else
-      {
-        $scope.state=1;
-      }
-    });
-     connected=true;
-   }
+    console.log("WTFFFF");
+    socketio.emit('getLobbyTime');
+    socketio.emit('playerStatusUpdate',3);
+    console.log("LOL WOW");
+    console.log('Time: '+curLobby.time);
+    if(curLobby.time<=0)
+    {
+      $scope.state=2;
+    }
+    else
+    {
+      $scope.state=1;
+    }
+  });
    socketio.on('resetRoom',function(){
     socketio.emit('playerStatusUpdate',0);
     curColor=allColors[9].colorHex;
@@ -213,7 +210,6 @@ angular.module('nodedrawApp')
 
 
    socketio.on('gameFinish',function(){
-    alert($scope.usersInGame.length);
     var dataURL = c.toDataURL('image/png');
     console.log(dataURL);
     $scope.state=2;

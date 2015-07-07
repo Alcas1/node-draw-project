@@ -19,10 +19,10 @@ div(ng-include='"components/rightbar/rightbar.html"')
 				.color(ng-class="{ 'colorActive': $index === selectedIndex }" ng-style="{'background-color':Color.colorHex}" ng-click='switchColor(Color.colorHex,$index)')
 		button.ready(ng-click='playerReady()' ng-show='state===0')
 			|{{Ready}}
-		
-
-
-
+		#1player(ng-show='state===2&&usersInGame.length===1')
+			|1 Player
+		#2player(ng-show='state===2&&usersInGame.length===2')
+			|2 Players
 
 
 

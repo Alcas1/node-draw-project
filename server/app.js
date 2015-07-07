@@ -122,8 +122,7 @@ var updateLobby=function(socket)
 
 			if(toPush[i].status===2)
 			{
-				console.log(toPush[i].id);
-				curLobby.usersInGame.push(toPush[i].id);
+				curLobby.usersInGame.push(toPush[i].userId);
 			}
 			if(toPush[i].userId===curLobby.adminId)
 				adminHere=true;
@@ -309,10 +308,11 @@ socketio.on('connection', function(socket) {
 				}
 			}
 			curLobby.users=toPush;
-
 			if(curLobby.state==='#0091ea')
 			{
+
 				socket.emit('joinInGame',curLobby);
+				console.log("OLOLOL");
 			}
 		}
 		socketio.sockets.in(name).emit('chatMessage',socket.user.name+' has Joined');
