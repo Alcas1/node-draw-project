@@ -184,6 +184,8 @@ angular.module('nodedrawApp')
 	});
    socketio.on('updateRoom',function(nLobby){
      $scope.lobby=nLobby;
+     console.log("Users In Game: "+nLobby.usersInGame);
+     $scope.usersInGame=nLobby.usersInGame;
      if(this.id===nLobby.adminId)
      {
       $scope.Ready='Start';
@@ -211,6 +213,9 @@ angular.module('nodedrawApp')
 
 
    socketio.on('gameFinish',function(){
+    alert($scope.usersInGame.length);
+    var dataURL = c.toDataURL('image/png');
+    console.log(dataURL);
     $scope.state=2;
   });
 

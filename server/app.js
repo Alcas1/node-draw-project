@@ -115,9 +115,16 @@ var updateLobby=function(socket)
 			}
 		}
 		curLobby.users=toPush;
+		curLobby.usersInGame=[];
 		var adminHere=false;
 		for(var i=0;i<toPush.length;i++)
 		{
+
+			if(toPush[i].status===2)
+			{
+				console.log(toPush[i].id);
+				curLobby.usersInGame.push(toPush[i].id);
+			}
 			if(toPush[i].userId===curLobby.adminId)
 				adminHere=true;
 		}
@@ -361,7 +368,7 @@ socketio.on('connection', function(socket) {
 			if(lobbies[i].name===socket.room)
 			{
 				lobbies[i].time=seconds;
-				if(seconds<=0&&lobbies[i].state)
+				if(seconds<=1&&lobbies[i].state)
 				{	
 					if(lobbies[i].adminId===socket.id)
 					{	
@@ -416,6 +423,7 @@ socketio.on('connection', function(socket) {
 				}
 				usersInRoom++;		
 			}
+
 			if(usersInRoom===1)
 			{	
 				socket.toDelete=true;
@@ -429,6 +437,7 @@ socketio.on('connection', function(socket) {
 					{
 						if(socket.room===lobbies[i].name)
 						{
+
 							socket.state=null;
 							lobbies[i].state=null;
 							socketio.sockets.in(socket.room).emit('resetRoom');
