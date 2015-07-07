@@ -88,8 +88,6 @@ angular.module('nodedrawApp')
       c.height = $('#draw').height();
       function redraw(){
   					// ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
-
-  					// ctx.strokeStyle = curColor;
   					ctx.lineJoin = "round";
   					ctx.lineWidth = 5;
   					for(var i=0; i < clickX.length; i++) {	
