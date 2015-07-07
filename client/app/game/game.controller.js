@@ -26,7 +26,8 @@ angular.module('nodedrawApp')
   var paint;
 
 
-  $scope.switchColor=function(colorHex){
+  $scope.switchColor=function(colorHex,item){
+    $scope.selectedIndex = item;
     curColor=colorHex;
   }
 
@@ -61,7 +62,7 @@ angular.module('nodedrawApp')
       var mouseX = ((e.pageX -15)/$('#draw').width())*$('#draw').width();
       var mouseY = ((e.pageY -70)/$('#draw').height())*$('#draw').height();
       paint = true;
-      addClick(mouseX,mouseY);
+      addClick(mouseX,mouseY,false,curColor);
       resizeCanvas();
     });
 
@@ -92,7 +93,7 @@ angular.module('nodedrawApp')
   					ctx.lineJoin = "round";
   					ctx.lineWidth = 5;
   					for(var i=0; i < clickX.length; i++) {	
-              ctx.strokeStyle = clickColor[i+1];
+              ctx.strokeStyle = clickColor[i];
               ctx.beginPath();
               if(clickDrag[i] && i){
                ctx.moveTo(clickX[i-1], clickY[i-1]);
@@ -114,6 +115,9 @@ angular.module('nodedrawApp')
 
    var curLobby;
    socketio.emit('getRoom');
+
+
+
 
 
    $("#userMsg").keypress(function (e) {
@@ -155,7 +159,6 @@ angular.module('nodedrawApp')
     clickColor = [];
     paint=null;
   });
-
 
 
 
@@ -201,9 +204,9 @@ angular.module('nodedrawApp')
     if(curLobby.state==='#0091ea')
     {
       socketio.emit('setGameTime',$scope.timeLeft--); 
-     $scope.$apply();
-   }
- });
+      $scope.$apply();
+    }
+  });
 
    socketio.on('setClientTime',function(time){
      $scope.timeLeft=time;
@@ -258,3 +261,5 @@ angular.module('nodedrawApp')
 
 
 });
+
+

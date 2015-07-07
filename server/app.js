@@ -20,9 +20,12 @@ if(config.seedDB) { require('./config/seed'); }
 var app = express();
 var server = require('http').createServer(app);
 var socketio = require('socket.io')(server, {
+	'pingInterval':1000,
+	'pingTimeout':1000,
 	serveClient: (config.env === 'production') ? false : true,
 	path: '/socket.io-client'
 });
+
 require('./config/socketio')(socketio);
 require('./config/express')(app);
 require('./routes')(app);
@@ -177,7 +180,7 @@ var updateLobby=function(socket)
 //   return array;
 // }
 
-socketio.sockets.on('connection', function(socket) {
+socketio.on('connection', function(socket) {
 	if(!connected)
 	{
 		setInterval(function(){

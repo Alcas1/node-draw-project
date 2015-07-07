@@ -16,7 +16,7 @@ div(ng-include='"components/rightbar/rightbar.html"')
 			canvas#draw(ng-show='playerStatus===2')
 		#colors(ng-show='playerStatus===2')
 			#colorBox(ng-repeat="Color in Colors" ng-show='state===1')
-				#color(ng-style="{'background-color':Color.colorHex}" ng-click='switchColor(Color.colorHex)')
+				.color(ng-class="{ 'colorActive': $index === selectedIndex }" ng-style="{'background-color':Color.colorHex}" ng-click='switchColor(Color.colorHex,$index)')
 		button.ready(ng-click='playerReady()' ng-show='state===0')
 			|{{Ready}}
 		.messages
