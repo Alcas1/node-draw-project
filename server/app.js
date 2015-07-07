@@ -361,14 +361,13 @@ socketio.on('connection', function(socket) {
 			if(lobbies[i].name===socket.room)
 			{
 				lobbies[i].time=seconds;
-				if(seconds===0&&lobbies[i].state)
+				if(seconds<=0&&lobbies[i].state)
 				{	
 					if(lobbies[i].adminId===socket.id)
 					{	
+						lobbies[i].state=null;
 						socketio.sockets.in(socket.room).emit('gameFinish');
-
 						socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What Everyone Drew!");
-						//socketio.sockets.in(socket.room).emit('resetRoom');
 					}
 				}
 			}
@@ -428,7 +427,6 @@ socketio.on('connection', function(socket) {
 
 					for(var i=0;i<lobbies.length;i++)
 					{
-						console.log(socket.room===lobbies[i].name);
 						if(socket.room===lobbies[i].name)
 						{
 							socket.state=null;
