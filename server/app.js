@@ -78,7 +78,6 @@ var updateLobby=function(socket)
 	//problem is on leave that socket.room gets undefined
 	var users=socketio.sockets.sockets;
 	var room=null;
-	//console.log(users);
 	if(socket.toDelete)
 	{
 
@@ -107,7 +106,6 @@ var updateLobby=function(socket)
 		{
 			if(users[i].room===curLobby.name)
 			{	
-				//console.log(users[i].user.status);
 				if(users[i].id===socket.id)
 				{
 					users[i].user.status=socket.status;
@@ -238,7 +236,6 @@ socketio.on('connection', function(socket) {
 		if(socket.room)
 		{
 			var curLobby=getLobby(socket.room);
-			console.log(curLobby);
 			socket.prevRoom=socket.room;
 			var users=curLobby.users;
 			var usersInRoom=0;
@@ -246,22 +243,184 @@ socketio.on('connection', function(socket) {
 			var isCurUser=false;
 			for(var i=0;i<users.length;i++)
 			{
-					if(users[i].status===2)
+				if(users[i].status===2)
+				{
+					usersInGame++;
+					if(users[i].userId===socket.id)
 					{
-						usersInGame++;
-						if(users[i].userId===socket.id)
-						{
-							isCurUser=true;
-						}
+						isCurUser=true;
 					}
-					usersInRoom++;		
+				}
+				usersInRoom++;		
 			}
 			if(usersInRoom===1)
 			{	
-				console.log(usersInRoom);
 				socket.toDelete=true;
 			}
-			console.log(usersInGame);
+			if(isCurUser)
+			{
+				if(usersInGame===1)
+				{
+
+					for(var i=0;i<lobbies.length;i++)
+					{
+						if(socket.room===lobbies[i].name)
+						{
+							socket.state=null;
+							lobbies[i].state=null;
+							socketio.sockets.in(socket.room).emit('resetRoom');
+						}
+					}
+				}
+			}
+			socket.leave(socket.room);
+			socketio.sockets.in(socket.room).emit('chatMessage',socket.user.name+' has Left');
+			socket.room=null;
+		}
+
+		socketio.sockets.emit('updateLobbyList',lobbies);
+	});
+	socket.on('join',function(name){
+
+		var curLobby=getLobby(name);
+		if(curLobby){
+			console.log("Joined Room: "+name);
+			if(socket.room)
+			{
+				socket.prevRoom=socket.room;
+			}
+			socket.room=name;
+			socket.status=0;
+			socket.join(name);
+			var users=socketio.sockets.sockets;
+			var toPush=[];
+			for(var i=0;i<users.length;i++)
+			{
+				if(users[i].room===curLobby.name)
+				{
+					toPush.push({userId:users[i].id,userName:users[i].user.name,status:0});
+				}
+			}
+			curLobby.users=toPush;
+
+			if(curLobby.state==='#0091ea')
+			{
+				socket.emit('joinInGame',curLobby);
+			}
+		}
+		socketio.sockets.in(name).emit('chatMessage',socket.user.name+' has Joined');
+	});
+
+	socket.on('getRoom',function(){
+		updateLobby(socket);
+	});
+
+	socket.on('playerStatusUpdate',function(status){
+		socket.status=status;
+		updateLobby(socket);
+	});
+
+	socket.on('startGame',function(){
+		var curLobby=getLobby(socket.room);
+		var users=socketio.sockets.sockets;
+		for(var i=0;i<users.length;i++)
+		{
+			if(users[i].room===curLobby.name)
+			{
+				if(users[i].user.status===1)
+				{
+					users[i].user.status=2;
+				}
+				else{
+					users[i].user.status=3;
+				}
+			}
+		}
+		socketio.sockets.in(socket.room).emit('startClientGame');
+		socket.status=2;
+		socket.state=1;
+		updateLobby(socket);
+	});
+
+	socket.on('getPlayerStatus',function(){
+		var users=getLobby(socket.room).users;
+		for(var i=0;i<users.length;i++)
+		{	
+			if(users[i].userId===socket.id)
+			{
+				socket.emit('setClientStatus',users[i].status);
+			}
+		}
+
+
+	});
+	socket.on('setGameTime',function(seconds){
+
+		for(var i=0;i<lobbies.length;i++)
+		{
+			if(lobbies[i].name===socket.room)
+			{
+				lobbies[i].time=seconds;
+				if(seconds===0&&lobbies[i].state)
+				{	
+					if(lobbies[i].adminId===socket.id)
+					{	
+						socketio.sockets.in(socket.room).emit('gameFinish');
+
+						socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What Everyone Drew!");
+						//socketio.sockets.in(socket.room).emit('resetRoom');
+					}
+				}
+			}
+		}
+
+	});
+
+	socket.on('getLobbyTime',function(){
+		socketio.sockets.in(socket.room).emit('setClientTime',getLobby(socket.room).time);
+	});
+
+
+	socket.on('updateUser',function(curUser){
+		socket.user=curUser;
+	});
+
+	socket.on('updateChat',function(msg){
+		socketio.sockets.in(socket.room).emit('chatMessage',msg);
+	});
+
+	socket.on('sendChat',function(msg){
+		socketio.sockets.in(socket.room).emit('chatMessage',socket.user.name+': '+msg);
+	});
+
+
+	socket.on('disconnect', function() {
+		console.log("Total Users on Server: "+(--numUsers));
+		socketio.sockets.emit('userCountChange',numUsers);
+		if(socket.room)
+		{
+			var curLobby=getLobby(socket.room);
+			socket.prevRoom=socket.room;
+			var users=curLobby.users;
+			var usersInRoom=0;
+			var usersInGame=0;
+			var isCurUser=false;
+			for(var i=0;i<users.length;i++)
+			{
+				if(users[i].status===2)
+				{
+					usersInGame++;
+					if(users[i].userId===socket.id)
+					{
+						isCurUser=true;
+					}
+				}
+				usersInRoom++;		
+			}
+			if(usersInRoom===1)
+			{	
+				socket.toDelete=true;
+			}
 			if(isCurUser)
 			{
 				if(usersInGame===1)
@@ -279,148 +438,12 @@ socketio.on('connection', function(socket) {
 					}
 				}
 			}
-			socket.leave(socket.room);
-			socketio.sockets.in(socket.room).emit('chatMessage',socket.user.name+' has Left');
-			socket.room=null;
 		}
-
-		socketio.sockets.emit('updateLobbyList',lobbies);
-	});
-socket.on('join',function(name){
-
-	var curLobby=getLobby(name);
-	if(curLobby){
-		console.log("Joined Room: "+name);
-		if(socket.room)
-		{
-			socket.prevRoom=socket.room;
-		}
-		socket.room=name;
-		socket.status=0;
-		socket.join(name);
-		var users=socketio.sockets.sockets;
-		var toPush=[];
-		for(var i=0;i<users.length;i++)
-		{
-			if(users[i].room===curLobby.name)
-			{
-				toPush.push({userId:users[i].id,userName:users[i].user.name,status:0});
-			}
-		}
-		curLobby.users=toPush;
-
-		if(curLobby.state==='#0091ea')
-		{
-			console.log('joined in game');
-			socket.emit('joinInGame',curLobby);
-			console.log('joined in game');
-		}
-	}
-	socketio.sockets.in(name).emit('chatMessage',socket.user.name+' has Joined');
-});
-
-socket.on('getRoom',function(){
-	updateLobby(socket);
-});
-
-socket.on('playerStatusUpdate',function(status){
-	socket.status=status;
-	updateLobby(socket);
-});
-
-socket.on('startGame',function(){
-	var curLobby=getLobby(socket.room);
-	var users=socketio.sockets.sockets;
-	for(var i=0;i<users.length;i++)
-	{
-		if(users[i].room===curLobby.name)
-		{
-			if(users[i].user.status===1)
-			{
-				users[i].user.status=2;
-			}
-			else{
-				users[i].user.status=3;
-			}
-		}
-	}
-	socketio.sockets.in(socket.room).emit('startClientGame');
-	socket.status=2;
-	socket.state=1;
-	updateLobby(socket);
-});
-
-socket.on('getPlayerStatus',function(){
-	var users=getLobby(socket.room).users;
-	for(var i=0;i<users.length;i++)
-	{	
-		if(users[i].userId===socket.id)
-		{
-			socket.emit('setClientStatus',users[i].status);
-		}
-	}
-
-
-});
-socket.on('setGameTime',function(seconds){
-
-	for(var i=0;i<lobbies.length;i++)
-	{
-		if(lobbies[i].name===socket.room)
-		{
-			lobbies[i].time=seconds;
-			if(seconds===0&&lobbies[i].state)
-			{	
-				if(lobbies[i].adminId===socket.id)
-				{	
-					socketio.sockets.in(socket.room).emit('gameFinish');
-
-					socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What Everyone Drew!");
-						//socketio.sockets.in(socket.room).emit('resetRoom');
-					}
-				}
-			}
-		}
-
-	});
-
-socket.on('getLobbyTime',function(){
-	socketio.sockets.in(socket.room).emit('setClientTime',getLobby(socket.room).time);
-});
-
-
-socket.on('updateUser',function(curUser){
-	socket.user=curUser;
-		//console.log(socket.user);
-	});
-
-socket.on('updateChat',function(msg){
-	socketio.sockets.in(socket.room).emit('chatMessage',msg);
-});
-
-socket.on('sendChat',function(msg){
-	socketio.sockets.in(socket.room).emit('chatMessage',socket.user.name+': '+msg);
-});
-
-
-socket.on('disconnect', function() {
-	console.log("Total Users on Server: "+(--numUsers));
-	socketio.sockets.emit('userCountChange',numUsers);
-	if(socket.room)
-	{
-		var curLobby=getLobby(socket.room);
-		socket.prevRoom=socket.room;
-		if(curLobby.users.length===1)
-		{
-			socket.toDelete=true;
-		}
-
 		updateLobby(socket);
 		socket.leave(socket.room);
 		socketio.sockets.in(socket.room).emit('chatMessage',socket.user.name+' has Disconnected');
 		socket.room=null;
-	}
-});
+	});
 
 });
 

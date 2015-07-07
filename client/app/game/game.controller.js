@@ -145,7 +145,6 @@ angular.module('nodedrawApp')
      connected=true;
    }
    socketio.on('resetRoom',function(){
-    console.log('omfg nuggets');
     socketio.emit('playerStatusUpdate',0);
     curColor=allColors[9].colorHex;
     $scope.playerStatus=0;
@@ -212,7 +211,6 @@ angular.module('nodedrawApp')
 
 
    socketio.on('gameFinish',function(){
-
     $scope.state=2;
   });
 
