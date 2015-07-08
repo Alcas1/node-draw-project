@@ -122,7 +122,7 @@ var updateLobby=function(socket)
 
 			if(toPush[i].status===2)
 			{
-				curLobby.usersInGame.push(toPush[i].userId);
+				curLobby.usersInGame.push({userId:toPush[i].userId});
 			}
 			if(toPush[i].userId===curLobby.adminId)
 				adminHere=true;
@@ -289,7 +289,7 @@ socketio.on('connection', function(socket) {
 	socket.on('join',function(name){
 
 		var curLobby=getLobby(name);
-		if(curLobby){
+		if(curLobby&&socket.user){
 			console.log("Joined Room: "+name);
 			if(socket.room)
 			{
@@ -314,11 +314,18 @@ socketio.on('connection', function(socket) {
 				socket.emit('joinInGame',curLobby);
 			}
 		}
-		socketio.sockets.in(name).emit('chatMessage',socket.user.name+' has Joined');
+		if(socket.user)
+		{
+			socketio.sockets.in(name).emit('chatMessage',socket.user.name+' has Joined');
+		}
 	});
 
 	socket.on('getRoom',function(){
 		updateLobby(socket);
+	});
+
+	socket.on('getImage',function(index){
+		socket.emit('');
 	});
 
 	socket.on('playerStatusUpdate',function(status){
@@ -383,7 +390,9 @@ socketio.on('connection', function(socket) {
 
 	socket.on('finishedDrawing',function(img){
 		console.log('finished drawing');
-		console.log(socket.id);
+		console.log(img);
+
+
 	});
 
 	socket.on('getLobbyTime',function(){
@@ -452,7 +461,7 @@ socketio.on('connection', function(socket) {
 		}
 		updateLobby(socket);
 		socket.leave(socket.room);
-		if(socket.user.name)
+		if(socket.user)
 		{
 			socketio.sockets.in(socket.room).emit('chatMessage',socket.user.name+' has Disconnected');
 		}
