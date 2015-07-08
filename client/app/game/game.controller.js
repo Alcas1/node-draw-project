@@ -140,10 +140,8 @@ angular.module('nodedrawApp')
  });
    socketio.on('joinInGame',function(curLobby)
    {
-    console.log("WTFFFF");
     socketio.emit('getLobbyTime');
     socketio.emit('playerStatusUpdate',3);
-    console.log("LOL WOW");
     console.log('Time: '+curLobby.time);
     if(curLobby.time<=0)
     {
@@ -231,6 +229,9 @@ angular.module('nodedrawApp')
     $scope.state=2;
   });
 
+   socketio.on('disconnect',function(){
+    alert('DISCONNECTED');
+   });
 
 
 
@@ -269,7 +270,6 @@ angular.module('nodedrawApp')
      socketio.emit('playerStatusUpdate',1);
    }
  }
-
 
 
 
