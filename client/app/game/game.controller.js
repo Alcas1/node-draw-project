@@ -16,6 +16,8 @@ angular.module('nodedrawApp')
   $scope.Colors=allColors;
   var curColor=allColors[9].colorHex;
   var socketio=socket.socket;
+  var lobby=$location.search();
+  console.log(lobby.lobbyName);
   $scope.playerStatus=1;
   $scope.state=0;
   var emitted=false;
@@ -112,7 +114,18 @@ angular.module('nodedrawApp')
 
 
    var curLobby;
-   socketio.emit('getRoom');
+   if($location.search().lobby.substring(0,1)==='#')
+   {
+
+   }
+   else{
+    var location=$location.search();
+     socketio.emit('getRoom');
+     socketio.emit('leave');
+     socketio.emit('getRoom');
+     socketio.emit('join',location.lobby);
+     socketio.emit('getRoom');
+   }
 
 
 
@@ -210,8 +223,11 @@ angular.module('nodedrawApp')
 
 
    socketio.on('gameFinish',function(){
-    var dataURL = c.toDataURL('image/png');
-    console.log(dataURL);
+    if($scope.playerStatus===2)
+    {
+      var dataURL = c.toDataURL('image/jpeg');
+      socketio.emit('finishedDrawing',dataURL);
+    }
     $scope.state=2;
   });
 

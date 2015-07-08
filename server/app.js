@@ -312,7 +312,6 @@ socketio.on('connection', function(socket) {
 			{
 
 				socket.emit('joinInGame',curLobby);
-				console.log("OLOLOL");
 			}
 		}
 		socketio.sockets.in(name).emit('chatMessage',socket.user.name+' has Joined');
@@ -382,6 +381,11 @@ socketio.on('connection', function(socket) {
 
 	});
 
+	socket.on('finishedDrawing',function(img){
+		console.log('finished drawing');
+		console.log(socket.id);
+	});
+
 	socket.on('getLobbyTime',function(){
 		socketio.sockets.in(socket.room).emit('setClientTime',getLobby(socket.room).time);
 	});
@@ -448,7 +452,10 @@ socketio.on('connection', function(socket) {
 		}
 		updateLobby(socket);
 		socket.leave(socket.room);
-		socketio.sockets.in(socket.room).emit('chatMessage',socket.user.name+' has Disconnected');
+		if(socket.user.name)
+		{
+			socketio.sockets.in(socket.room).emit('chatMessage',socket.user.name+' has Disconnected');
+		}
 		socket.room=null;
 	});
 

@@ -30,12 +30,12 @@ angular.module('nodedrawApp')
       socketio.emit('getRoom');
       socketio.emit('createLobby', {lobbyName:$scope.lobbyName,lobbyPlayerNum:$scope.lobbyPlayerNum,code:$scope.code});
       socketio.emit('getRoom');
+      var newLobbyName='#'+$scope.lobbyName;
+      $location.path('/game').search({lobby:newLobbyName});
       $scope.lobbyName = '';
       $scope.lobbyPlayerNum = '';
       $scope.code = '';
-      $location.path('/game');
     }
-    //console.log('invalid form');
 
   };
 

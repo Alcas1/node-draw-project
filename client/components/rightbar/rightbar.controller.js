@@ -53,22 +53,12 @@ angular.module('nodedrawApp')
 
 
   
-  $scope.goToLobby = function(lobby){
+  $scope.goToLobby = function(nLobby){
     socketio.emit('getLobbyList');
-    if(!(lobby.status==='#f44336'))
+    console.log(nLobby.status);
+    if(!(nLobby.status==='#f44336'))
     {
-      $location.path('/game');
-      console.log('omg');
-      
-      socketio.emit('leave');
-      socketio.emit('getRoom');
-      socketio.emit('join',lobby.name);
-      socketio.emit('getRoom');
-      if(lobby.state==='#0091ea')
-      {
-        socketio.emit('playerStatusUpdate',3);
-      }
-      
+      $location.path('/game').search({lobby:nLobby.name});
     } 
   };
 
