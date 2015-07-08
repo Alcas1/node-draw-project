@@ -328,9 +328,6 @@ socketio.on('connection', function(socket) {
 		updateLobby(socket);
 	});
 
-	socket.on('getImage',function(index){
-		socket.emit('');
-	});
 
 	socket.on('playerStatusUpdate',function(status){
 		socket.status=status;
@@ -382,9 +379,10 @@ socketio.on('connection', function(socket) {
 				{	
 					if(lobbies[i].adminId===socket.id)
 					{	
-						lobbies[i].state=null;
+						
 						socketio.sockets.in(socket.room).emit('gameFinish');
 						socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What Everyone Drew!");
+						lobbies[i].state=null;
 					}
 				}
 			}
@@ -395,6 +393,26 @@ socketio.on('connection', function(socket) {
 	socket.on('finishedDrawing',function(img){
 		console.log('finished drawing');
 		socket.image=img;
+		var curLobby=getLobby(socket.room);
+		for(var i=0;i<curLobby.usersInGame.length;i++)
+		{
+			if(curLobby.usersInGame[i].userId===socket.id)
+			{
+				curLobby.usersInGame[i].image=socket.image;
+			}
+			
+		}
+		socketio.sockets.in(socket.room).emit('updateRoom',curLobby);
+		socketio.sockets.in(socket.room).emit('drawingsSubmitted');
+
+	});
+
+	socket.on('prepDisplay',function(drawingNumber){
+		var curLobby=getLobby(socket.room);
+		if(drawingNumber===curLobby.usersInGame.length){
+			socketio.emit('displayImages');
+			//alert('DISPLAY ALL IMAGES WE READY');
+		}
 	});
 
 	socket.on('getLobbyTime',function(){

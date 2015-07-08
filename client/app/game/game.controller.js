@@ -190,8 +190,8 @@ angular.module('nodedrawApp')
 
   });
   socketio.on('updateRoom',function(nLobby){
+
    $scope.lobby=nLobby;
-   console.log("Users In Game: "+nLobby.usersInGame);
    $scope.usersInGame=nLobby.usersInGame;
    if(this.id===nLobby.adminId)
    {
@@ -224,25 +224,23 @@ angular.module('nodedrawApp')
     {
       var dataURL = c.toDataURL('image/jpeg');
       socketio.emit('finishedDrawing',dataURL);
-      console.log(curLobby);
     }
     $scope.state=2;
-
-    for(var i=0;i<$scope.usersInGame;i++)
-    {
-      socketio.emit('getImage',i);
-    }
-
+    $scope.drawings=0;
   });
 
+  socketio.on('drawingsSubmitted',function(){
+    socketio.emit('prepDisplay',++$scope.drawings);
+    console.log(curLobby);
+  });
 
+  socketio.on('displayImages',function(){
+    alert('DISPLAY!!!');
+  });
 
   socketio.on('getImages',function(){
     if($scope.usersInGame===1)
     {
-
-
-
 
     }
     else if($scope.usersInGame===2)
@@ -286,7 +284,7 @@ angular.module('nodedrawApp')
   $scope.playerReady=function(){
     if($scope.Ready==='Start')
     {
-     socketio.emit('setGameTime',45);
+     socketio.emit('setGameTime',5);
      socketio.emit('getLobbyTime');
      socketio.emit('startGame');
      socketio.emit('updateChat',"Game Started!");
