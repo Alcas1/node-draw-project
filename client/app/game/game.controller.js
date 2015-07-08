@@ -87,10 +87,10 @@ angular.module('nodedrawApp')
       c.width = $('#draw').width();
       c.height = $('#draw').height();
       function redraw(){
-  					// ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
-  					ctx.lineJoin = "round";
-  					ctx.lineWidth = 5;
-  					for(var i=0; i < clickX.length; i++) {	
+            // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
+            ctx.lineJoin = "round";
+            ctx.lineWidth = 5;
+            for(var i=0; i < clickX.length; i++) {  
               ctx.strokeStyle = clickColor[i];
               ctx.beginPath();
               if(clickDrag[i] && i){
@@ -175,20 +175,20 @@ angular.module('nodedrawApp')
    });
   }
   else{
-			//PROMPT FOR USERNAME
-			var curUser ={
-				name: "Guest "+this.id.substring(0,5),
-				email: "",
-				role: "user",
-				tempScore:0,
-				totalScore:0,
-				provider: "local",
-				status:0
-			};
-			socketio.emit('updateUser',curUser);
-		}
+      //PROMPT FOR USERNAME
+      var curUser ={
+        name: "Guest "+this.id.substring(0,5),
+        email: "",
+        role: "user",
+        tempScore:0,
+        totalScore:0,
+        provider: "local",
+        status:0
+      };
+      socketio.emit('updateUser',curUser);
+    }
 
-	});
+  });
   socketio.on('updateRoom',function(nLobby){
    $scope.lobby=nLobby;
    console.log("Users In Game: "+nLobby.usersInGame);
@@ -224,6 +224,7 @@ angular.module('nodedrawApp')
     {
       var dataURL = c.toDataURL('image/jpeg');
       socketio.emit('finishedDrawing',dataURL);
+      console.log(curLobby);
     }
     $scope.state=2;
 

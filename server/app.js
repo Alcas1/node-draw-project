@@ -122,7 +122,11 @@ var updateLobby=function(socket)
 
 			if(toPush[i].status===2)
 			{
-				curLobby.usersInGame.push({userId:toPush[i].userId});
+				if(toPush[i].userId===socket.id)
+				{
+					toPush[i].image=socket.image;
+				}
+				curLobby.usersInGame.push({userId:toPush[i].userId,image:toPush[i].image});
 			}
 			if(toPush[i].userId===curLobby.adminId)
 				adminHere=true;
@@ -390,9 +394,7 @@ socketio.on('connection', function(socket) {
 
 	socket.on('finishedDrawing',function(img){
 		console.log('finished drawing');
-		console.log(img);
-
-
+		socket.image=img;
 	});
 
 	socket.on('getLobbyTime',function(){
