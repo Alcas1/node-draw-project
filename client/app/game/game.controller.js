@@ -240,12 +240,13 @@ angular.module('nodedrawApp')
 
       var img=new Image();
       var canvasName=("canvas"+$scope.usersInGame.length)+(i+1);
-      console.log(canvasName);
+      //$('#'+canvasName).height
       var c1 = document.getElementById(canvasName);
       c1.width  = window.innerWidth;
       c1.height = window.innerHeight;
       var ctx1 = c1.getContext("2d");
       ctxArray.push(ctx1);
+      ctxArray=shuffle(ctxArray);
       img.onload = (function (nr) {
         return function(){
         console.log(img);
@@ -277,13 +278,13 @@ angular.module('nodedrawApp')
 
 
   socketio.on('disconnect',function(){
-    alert('DISCONNECTED');
+    //alert('DISCONNECTED');
   });
 
 
 function shuffle(array) {
-  var m = array.length, t, i;
-
+  var m = array.length;
+  var t,i;
   // While there remain elements to shuffle…
   while (m) {
 
