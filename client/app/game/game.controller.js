@@ -235,7 +235,7 @@ angular.module('nodedrawApp')
   });
 
   socketio.on('displayImages',function(){
-    alert('DISPLAY!!!');
+    console.log('LOLOLOL');
   });
 
   socketio.on('getImages',function(){

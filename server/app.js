@@ -411,6 +411,7 @@ socketio.on('connection', function(socket) {
 		var curLobby=getLobby(socket.room);
 		if(drawingNumber===curLobby.usersInGame.length){
 			socketio.emit('displayImages');
+			
 			//alert('DISPLAY ALL IMAGES WE READY');
 		}
 	});
