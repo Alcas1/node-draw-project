@@ -170,23 +170,6 @@ var updateLobby=function(socket)
 
 }
 
-// function shuffle(array) {
-//   var m = array.length, t, i;
-
-//   // While there remain elements to shuffle…
-//   while (m) {
-
-//     // Pick a remaining element…
-//     i = Math.floor(Math.random() * m--);
-
-//     // And swap it with the current element.
-//     t = array[m];
-//     array[m] = array[i];
-//     array[i] = t;
-//   }
-
-//   return array;
-// }
 
 socketio.on('connection', function(socket) {
 	if(!connected)
@@ -410,8 +393,9 @@ socketio.on('connection', function(socket) {
 	socket.on('prepDisplay',function(drawingNumber){
 		var curLobby=getLobby(socket.room);
 		if(drawingNumber===curLobby.usersInGame.length){
-			socketio.emit('displayImages');
-			
+
+			socket.emit('displayImages');
+
 			//alert('DISPLAY ALL IMAGES WE READY');
 		}
 	});

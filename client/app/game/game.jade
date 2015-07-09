@@ -20,14 +20,17 @@ div(ng-include='"components/rightbar/rightbar.html"')
 		button.ready(ng-click='playerReady()' ng-show='state===0')
 			|{{Ready}}
 		.player1(ng-show='state===2&&usersInGame.length===1' ng-class='playerActive1')
-			canvas#canvas11
+			#draw-game
+				canvas#canvas11
 		.player2(ng-show='state===2&&usersInGame.length===2' ng-class='playerActive2')
-			canvas#canvas21
-			canvas#canvas22
+			#draw-game
+				canvas#canvas21
+				canvas#canvas22
 		.player3(ng-show='state===2&&usersInGame.length===3' ng-class='playerActive3')
-			canvas#canvas31
-			canvas#canvas32
-			canvas#canvas33
+			#draw-game
+				canvas#canvas31
+				canvas#canvas32
+				canvas#canvas33
 
 
 		.messages

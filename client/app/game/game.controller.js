@@ -41,7 +41,6 @@ angular.module('nodedrawApp')
     clickDrag.push(dragging);
     clickColor.push(color);
   }
-
   var c = document.getElementById("draw");
   c.style.width ='100%';
   c.style.height='100%';
@@ -222,7 +221,7 @@ angular.module('nodedrawApp')
   socketio.on('gameFinish',function(){
     if($scope.playerStatus===2)
     {
-      var dataURL = c.toDataURL('image/jpeg');
+      var dataURL = c.toDataURL('image/png');
       socketio.emit('finishedDrawing',dataURL);
     }
     $scope.state=2;
@@ -231,33 +230,74 @@ angular.module('nodedrawApp')
 
   socketio.on('drawingsSubmitted',function(){
     socketio.emit('prepDisplay',++$scope.drawings);
-    console.log(curLobby);
   });
 
   socketio.on('displayImages',function(){
-    console.log('LOLOLOL');
+    console.log(curLobby);
+    var ctxArray=[];
+    for(var i=0;i<$scope.usersInGame.length;i++)
+    {
+
+      var img=new Image();
+      var canvasName=("canvas"+$scope.usersInGame.length)+(i+1);
+      console.log(canvasName);
+      var c1 = document.getElementById(canvasName);
+      c1.width  = window.innerWidth;
+      c1.height = window.innerHeight;
+      var ctx1 = c1.getContext("2d");
+      ctxArray.push(ctx1);
+      img.onload = (function (nr) {
+        return function(){
+        console.log(img);
+        img.src=curLobby.usersInGame[nr].image;
+        ctxArray[nr].drawImage(img,0,0);
+        }
+       }(i));
+      img.src=curLobby.usersInGame[i].image;
+    }
+
+
+
+    if($scope.usersInGame.length===1)
+    {
+      
+      
+     
+
+    }
+    else if($scope.usersInGame.length===2)
+    {
+
+    }
+    else if($scope.usersInGame.length===3)
+    {
+
+    }
   });
 
-  socketio.on('getImages',function(){
-    if($scope.usersInGame===1)
-    {
-
-    }
-    else if($scope.usersInGame===2)
-    {
-
-    }
-    else if($scope.usersInGame===3)
-    {
-
-    }
-  });
 
   socketio.on('disconnect',function(){
     alert('DISCONNECTED');
   });
 
 
+function shuffle(array) {
+  var m = array.length, t, i;
+
+  // While there remain elements to shuffle…
+  while (m) {
+
+    // Pick a remaining element…
+    i = Math.floor(Math.random() * m--);
+
+    // And swap it with the current element.
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+  }
+
+  return array;
+}
 
 
   socketio.on('setClientStatus',function(status)
@@ -284,7 +324,7 @@ angular.module('nodedrawApp')
   $scope.playerReady=function(){
     if($scope.Ready==='Start')
     {
-     socketio.emit('setGameTime',5);
+     socketio.emit('setGameTime',10);
      socketio.emit('getLobbyTime');
      socketio.emit('startGame');
      socketio.emit('updateChat',"Game Started!");
