@@ -364,7 +364,15 @@ socketio.on('connection', function(socket) {
 					{	
 						
 						socketio.sockets.in(socket.room).emit('gameFinish');
-						socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What Everyone Drew!");
+						if(lobbies[i].usersInGame.length===1)
+						{
+							//socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What" + lobbies[i].usersInGame[0].userId+ "Drew!");
+							socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What Everyone Drew!");
+						}
+						else
+						{
+							socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What Everyone Drew!");
+						}
 						lobbies[i].state=null;
 					}
 				}

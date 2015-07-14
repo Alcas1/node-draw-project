@@ -42,12 +42,12 @@ angular.module('nodedrawApp')
     clickColor.push(color);
   }
   var c = document.getElementById("draw");
-  c.style.width ='100%';
-  c.style.height='100%';
+  // c.style.width ='100%';
+  // c.style.height='100%';
   c.width  = c.offsetWidth;
   c.height = c.offsetHeight;
   var ctx = c.getContext("2d");
-  window.addEventListener('resize', canvasEvents($scope.playerStatus), false);
+  // window.addEventListener('resize', canvasEvents($scope.playerStatus), false);
 
 
 
@@ -83,8 +83,8 @@ angular.module('nodedrawApp')
       paint = false;
     });
      function resizeCanvas() {
-      c.width = $('#draw').width();
-      c.height = $('#draw').height();
+      // c.width = $('#draw').width();
+      // c.height = $('#draw').height();
       function redraw(){
             // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
             ctx.lineJoin = "round";
@@ -109,7 +109,7 @@ angular.module('nodedrawApp')
 
    }
 
-
+   // $('#draw-game').height($('#draw-game').width());
    var curLobby;
    if($location.search().lobby.substring(0,1)==='#')
    {
@@ -233,7 +233,7 @@ angular.module('nodedrawApp')
   });
 
   socketio.on('displayImages',function(){
-    console.log(curLobby);
+    // console.log(curLobby);
     var ctxArray=[];
     for(var i=0;i<$scope.usersInGame.length;i++)
     {
@@ -242,8 +242,10 @@ angular.module('nodedrawApp')
       var canvasName=("canvas"+$scope.usersInGame.length)+(i+1);
       //$('#'+canvasName).height
       var c1 = document.getElementById(canvasName);
-      c1.width  = window.innerWidth;
-      c1.height = window.innerHeight;
+      c1.width  = window.innerHeight-200;
+      c1.height = window.innerHeight-200;
+      // c1.width=$('#'+canvasName).height();
+      // c1.height=$('#'+canvasName).height();
       var ctx1 = c1.getContext("2d");
       ctxArray.push(ctx1);
       ctxArray=shuffle(ctxArray);
