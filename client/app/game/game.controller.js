@@ -47,15 +47,39 @@ angular.module('nodedrawApp')
   c.width  = c.offsetWidth;
   c.height = c.offsetHeight;
   var ctx = c.getContext("2d");
-  // window.addEventListener('resize', canvasEvents($scope.playerStatus), false);
+  $(window).on('resize', function() {
+   updateCanvasSize($scope.playerStatus);
+ });
 
 
 
-  function canvasEvents(status)
-  {
-
+  function updateCanvasSize(status){
     if(status===2)
     {
+      c.width = $('#draw').width();
+      c.height = $('#draw').height();
+      ctx.lineJoin = "round";
+      ctx.lineWidth = 5;
+      for(var i=0; i < clickX.length; i++) {  
+        ctx.strokeStyle = clickColor[i];
+        ctx.beginPath();
+        if(clickDrag[i] && i){
+         ctx.moveTo(clickX[i-1], clickY[i-1]);
+       }else{
+         ctx.moveTo(clickX[i]-1, clickY[i]);
+       }
+       ctx.lineTo(clickX[i], clickY[i]);
+       ctx.closePath();
+       ctx.stroke();
+      }
+     }
+   }
+
+   function canvasEvents(status)
+   {
+    if(status===2)
+    {
+
      $('#draw').mousedown(function(e){
 
       var mouseX = ((e.pageX -15)/$('#draw').width())*$('#draw').width();
@@ -83,8 +107,8 @@ angular.module('nodedrawApp')
       paint = false;
     });
      function resizeCanvas() {
-      // c.width = $('#draw').width();
-      // c.height = $('#draw').height();
+      c.width = $('#draw').width();
+      c.height = $('#draw').height();
       function redraw(){
             // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
             ctx.lineJoin = "round";
@@ -115,8 +139,8 @@ angular.module('nodedrawApp')
    {
     var location=$location.search();
     $location.search({lobby:location.lobby.substring(1,location.lobby.length)});
-   }
-   else{
+  }
+  else{
     var location=$location.search();
     socketio.emit('getRoom');
     socketio.emit('leave');
@@ -251,11 +275,11 @@ angular.module('nodedrawApp')
       ctxArray=shuffle(ctxArray);
       img.onload = (function (nr) {
         return function(){
-        console.log(img);
-        img.src=curLobby.usersInGame[nr].image;
-        ctxArray[nr].drawImage(img,0,0);
+          console.log(img);
+          img.src=curLobby.usersInGame[nr].image;
+          ctxArray[nr].drawImage(img,0,0);
         }
-       }(i));
+      }(i));
       img.src=curLobby.usersInGame[i].image;
     }
 
@@ -263,9 +287,9 @@ angular.module('nodedrawApp')
 
     if($scope.usersInGame.length===1)
     {
-      
-      
-     
+
+
+
 
     }
     else if($scope.usersInGame.length===2)
@@ -279,7 +303,7 @@ angular.module('nodedrawApp')
   });
 
 
-  socketio.on('disconnect',function(){
+socketio.on('disconnect',function(){
     //alert('DISCONNECTED');
   });
 
@@ -303,40 +327,40 @@ function shuffle(array) {
 }
 
 
-  socketio.on('setClientStatus',function(status)
+socketio.on('setClientStatus',function(status)
+{
+ $scope.playerStatus=status;
+ canvasEvents(status);
+});
+
+socketio.on('startClientGame',function(){
+ socketio.emit('getLobbyTime');
+ socketio.emit('getPlayerStatus');
+ $scope.state=1;
+});
+
+
+socketio.on('chatMessage',function(msg){
+ $('#messages-chat').append($('<li>').text(msg));
+ $("#messages-chat").scrollTop($("#messages-chat")[0].scrollHeight);
+});
+
+$scope.$on('$destroy', function (event) {
+  socketio.removeAllListeners();
+});
+$scope.playerReady=function(){
+  if($scope.Ready==='Start')
   {
-   $scope.playerStatus=status;
-   canvasEvents(status);
- });
-
-  socketio.on('startClientGame',function(){
+   socketio.emit('setGameTime',45);
    socketio.emit('getLobbyTime');
-   socketio.emit('getPlayerStatus');
-   $scope.state=1;
- });
-
-
-  socketio.on('chatMessage',function(msg){
-   $('#messages-chat').append($('<li>').text(msg));
-   $("#messages-chat").scrollTop($("#messages-chat")[0].scrollHeight);
- });
-
-  $scope.$on('$destroy', function (event) {
-    socketio.removeAllListeners();
-  });
-  $scope.playerReady=function(){
-    if($scope.Ready==='Start')
-    {
-     socketio.emit('setGameTime',10);
-     socketio.emit('getLobbyTime');
-     socketio.emit('startGame');
-     socketio.emit('updateChat',"Game Started!");
-   }
-   else{
-
-     socketio.emit('playerStatusUpdate',1);
-   }
+   socketio.emit('startGame');
+   socketio.emit('updateChat',"Game Started!");
  }
+ else{
+
+   socketio.emit('playerStatusUpdate',1);
+ }
+}
 
 
 

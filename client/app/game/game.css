@@ -96,6 +96,10 @@ textarea#userMsg{
 	overflow: hidden;
 }
 
+canvas{
+	background-color: #fff;
+}
+
 
 .canv{
 	display: block;
@@ -132,16 +136,17 @@ textarea#userMsg{
 	}
 
 	#draw-game{
+		border-top-left-radius: 8px;
+		border-top-right-radius: 8px;
+		background-color: rgb(249,249,249);
 		position: absolute;
-		/*width: -moz-calc(90% - 150px);
-		width: -webkit-calc(90% - 150px);
-		width: calc(90% - 150px);*/
 		width: 100%;
 		height: -moz-calc(100% - 120px);
 		height: -webkit-calc(100% - 120px);
 		height: calc(100% - 120px);
 	}
 	#colors{
+		border-bottom-left-radius-left-radius: 8px;
 		position: absolute;
 		bottom: 0px;
 		width: -moz-calc(90% - 150px);
@@ -152,6 +157,8 @@ textarea#userMsg{
 
 
 	#colorBox{
+		border-bottom-left-radius-left-radius: 8px;
+		background-color: rgb(249,249,249);
 		box-sizing:content-box;
 		position: relative;
 		width: 20%;
@@ -167,7 +174,7 @@ textarea#userMsg{
 		border-bottom-left-radius: 8px;
 	}
 
-	#color{
+	.color{
 		border-bottom-left-radius: inherit;
 		box-sizing:content-box;
 		width: 100%;
@@ -179,13 +186,6 @@ textarea#userMsg{
 
 @media (min-width: 1000px) {
 
-	#canvas11{
-	
-	left: 5%;
-	top:5%;
-	width: auto;
-	height: 500px;
-}
 
 	textarea#userMsg{
 		height:40px;
@@ -215,6 +215,8 @@ textarea#userMsg{
 	}
 
 	#draw-game{
+		border-top-left-radius: 8px;
+		background-color: rgb(249,249,249);
 		position: absolute;
 		width: -moz-calc(90% - 150px);
 		width: -webkit-calc(90% - 150px);
@@ -224,6 +226,8 @@ textarea#userMsg{
 		height: calc(100% - 60px);
 	}
 	#colors{
+		border-bottom-left-radius: 8px;
+		background-color: rgb(249,249,249);
 		position: absolute;
 		bottom: 0px;
 		width: -moz-calc(90% - 150px);
@@ -260,11 +264,60 @@ textarea#userMsg{
 		box-shadow: 0px 1px 1px rgba(43, 59, 93, 0.29);
 	}
 
+	
+}
+
+
+
+
+#timer{
+	position:absolute;
+	font-size:20px;
+	top:5px;
+	right:15px;
+}
+@media(min-width: 330px){
+	canvas#draw{
+		width: 55vmin; 
+		height: 55vmin;
+		border-top-left-radius: 8px;
+		z-index: 1000;
+		position: absolute;
+		box-shadow: 0px 2px 2px rgba(43, 59, 93, 0.29);
+	}
+	#canvas11{
+
+		left: 5%;
+		top:5%;
+		width: 55vmin; 
+		height: 55vmin;
+	}
+}
+
+
+@media (min-width: 1000px) {
+
+	canvas#draw{
+		width: 65vmin;
+		height: 65vmin;
+		border-top-left-radius: 8px;
+		z-index: 1000;
+		position: absolute;
+		box-shadow: 0px 2px 2px rgba(43, 59, 93, 0.29);
+	}
+
+	#canvas11{
+
+		left: 5%;
+		top:5%;
+		width: 65vmin;
+		height: 65vmin;
+	}
+
 	#canvas21{
 		position: absolute;
-		width: 50%;
-		height:50%;
-		/*height: 100%;*/
+		width: 65vmin;
+		height: 65vmin;
 	}
 	#canvas22{
 		position: absolute;
@@ -288,37 +341,6 @@ textarea#userMsg{
 		left:67%;
 		width: 30%;
 		/*height: 100%;*/
-	}
-}
-
-
-
-
-#timer{
-	position:absolute;
-	font-size:20px;
-	top:5px;
-	right:15px;
-}
-
-canvas#draw{
-		width: 60vmin; 
-		height: 60vmin;
-		border-top-left-radius: 8px;
-		z-index: 1000;
-		position: absolute;
-		box-shadow: 0px 2px 2px rgba(43, 59, 93, 0.29);
-	}
-
-@media (min-width: 1000px) {
-
-	canvas#draw{
-		width: 65vmin;
-		height: 65vmin;
-		border-top-left-radius: 8px;
-		z-index: 1000;
-		position: absolute;
-		box-shadow: 0px 2px 2px rgba(43, 59, 93, 0.29);
 	}
 
 }
