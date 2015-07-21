@@ -18,6 +18,8 @@ angular.module('nodedrawApp')
   var socketio=socket.socket;
   $scope.playerStatus=1;
   $scope.state=0;
+  var localTimer;
+  var localTime=0;
   var emitted=false;
   var clickX = new Array();
   var clickY = new Array();
@@ -71,45 +73,45 @@ angular.module('nodedrawApp')
        ctx.lineTo(clickX[i], clickY[i]);
        ctx.closePath();
        ctx.stroke();
-      }
      }
    }
+ }
 
-   function canvasEvents(status)
-   {
-    if(status===2)
-    {
+ function canvasEvents(status)
+ {
+  if(status===2)
+  {
 
-     $('#draw').mousedown(function(e){
+   $('#draw').mousedown(function(e){
 
-      var mouseX = ((e.pageX -15)/$('#draw').width())*$('#draw').width();
-      var mouseY = ((e.pageY -70)/$('#draw').height())*$('#draw').height();
-      paint = true;
-      addClick(mouseX,mouseY,false,curColor);
-      resizeCanvas();
-    });
+    var mouseX = ((e.pageX -15)/$('#draw').width())*$('#draw').width();
+    var mouseY = ((e.pageY -70)/$('#draw').height())*$('#draw').height();
+    paint = true;
+    addClick(mouseX,mouseY,false,curColor);
+    resizeCanvas();
+  });
 
 
-     $('#draw').mousemove(function(e){
-      if(paint){
-       var mouseX = ((e.pageX -15)/$('#draw').width())*$('#draw').width();
-       var mouseY = ((e.pageY -70)/$('#draw').height())*$('#draw').height();
-       addClick(mouseX, mouseY, true,curColor);
-       resizeCanvas();
-     }
-   });
+   $('#draw').mousemove(function(e){
+    if(paint){
+     var mouseX = ((e.pageX -15)/$('#draw').width())*$('#draw').width();
+     var mouseY = ((e.pageY -70)/$('#draw').height())*$('#draw').height();
+     addClick(mouseX, mouseY, true,curColor);
+     resizeCanvas();
+   }
+ });
 
-     $('#draw').mouseup(function(e){
-      paint = false;
-    });
+   $('#draw').mouseup(function(e){
+    paint = false;
+  });
 
-     $('#draw').mouseleave(function(e){
-      paint = false;
-    });
-     function resizeCanvas() {
-      c.width = $('#draw').width();
-      c.height = $('#draw').height();
-      function redraw(){
+   $('#draw').mouseleave(function(e){
+    paint = false;
+  });
+   function resizeCanvas() {
+    c.width = $('#draw').width();
+    c.height = $('#draw').height();
+    function redraw(){
             // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
             ctx.lineJoin = "round";
             ctx.lineWidth = 5;
@@ -161,8 +163,9 @@ angular.module('nodedrawApp')
    }
  });
   socketio.on('joinInGame',function(curLobby)
-  {
-    socketio.emit('getLobbyTime');
+  { 
+    $scope.timeLeft='Getting Game Time...';
+    $scope.$apply();
     socketio.emit('playerStatusUpdate',3);
     console.log('Time: '+curLobby.time);
     if(curLobby.time<=0)
@@ -228,18 +231,16 @@ angular.module('nodedrawApp')
   curLobby=nLobby;
 
 });
-  socketio.on('incrementSecond',function()
-  {
-    if(curLobby.state==='#0091ea')
-    {
-      socketio.emit('setGameTime',$scope.timeLeft--); 
-      $scope.$apply();
-    }
-  });
+
+
 
   socketio.on('setClientTime',function(time){
-   $scope.timeLeft=time;
- });
+    clearInterval(localTimer);
+    localTimer=setInterval(updateTime,1000);
+    localTime=time;
+    $scope.timeLeft=localTime;
+    $scope.$apply();
+  });
 
 
   socketio.on('gameFinish',function(){
@@ -334,7 +335,6 @@ socketio.on('setClientStatus',function(status)
 });
 
 socketio.on('startClientGame',function(){
- socketio.emit('getLobbyTime');
  socketio.emit('getPlayerStatus');
  $scope.state=1;
 });
@@ -351,18 +351,29 @@ $scope.$on('$destroy', function (event) {
 $scope.playerReady=function(){
   if($scope.Ready==='Start')
   {
-   socketio.emit('setGameTime',45);
-   socketio.emit('getLobbyTime');
-   socketio.emit('startGame');
-   socketio.emit('updateChat',"Game Started!");
- }
- else{
+    var gameTimeLimit=45;
+    socketio.emit('setGameTime',gameTimeLimit);
+    localTime=gameTimeLimit;
+    $scope.timeLeft=localTime;
+    socketio.emit('startGame');
+    socketio.emit('updateChat',"Game Started!");
+  }
+  else{
 
    socketio.emit('playerStatusUpdate',1);
  }
 }
 
-
+function updateTime(){
+  localTime-=1;
+  $scope.timeLeft=localTime;
+  $scope.$apply();
+  console.log(localTime);
+  if(localTime<=0)
+  {
+    clearInterval(localTimer);
+  }
+}
 
 });
 

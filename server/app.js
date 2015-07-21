@@ -170,14 +170,12 @@ var updateLobby=function(socket)
 
 }
 
-
+//update time on client side
+//send one signal
+//sync every 10 seconds
 socketio.on('connection', function(socket) {
 	if(!connected)
 	{
-		setInterval(function(){
-					// socketio.sockets.in(socket.room).emit('updateTime', seconds); 
-					socketio.sockets.emit('incrementSecond');
-				}, 1000);
 		socket.status=0;
 		connected=true;
 	}	
@@ -225,7 +223,7 @@ socketio.on('connection', function(socket) {
 
 	});
 	socket.on('leave',function(name){
-		
+
 		if(socket.room)
 		{
 			var curLobby=getLobby(socket.room);
@@ -352,134 +350,152 @@ socketio.on('connection', function(socket) {
 
 	});
 	socket.on('setGameTime',function(seconds){
-
-		for(var i=0;i<lobbies.length;i++)
+		var localTime=seconds;
+		socketio.sockets.in(socket.room).emit('setClientTime',localTime);
+		function updateGameTime()
 		{
-			if(lobbies[i].name===socket.room)
-			{
-				lobbies[i].time=seconds;
-				if(seconds<=1&&lobbies[i].state)
-				{	
-					if(lobbies[i].adminId===socket.id)
-					{	
-						
-						socketio.sockets.in(socket.room).emit('gameFinish');
-						if(lobbies[i].usersInGame.length===1)
-						{
-							//socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What" + lobbies[i].usersInGame[0].userId+ "Drew!");
-							socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What Everyone Drew!");
-						}
-						else
-						{
-							socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What Everyone Drew!");
-						}
-						lobbies[i].state=null;
-					}
-				}
+			localTime-=10;
+			socketio.sockets.in(socket.room).emit('setClientTime',localTime);
+			console.log(localTime);
+			if(localTime-10<=0){
+				console.log('omfg lol');
+				clearInterval(localTimer);
+				setTimeout(function(){
+					socketio.sockets.in(socket.room).emit('setClientTime',0);
+					socketio.sockets.in(socket.room).emit('gameFinish');
+					socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What Everyone Drew!");
+					//lobbies[i].state=null;
+				}, seconds*1000);
+
 			}
 		}
+		var localTimer=setInterval(updateGameTime, 10000);
+		
+		
+		
+		// for(var i=0;i<lobbies.length;i++)
+		// {
+		// 	if(lobbies[i].name===socket.room)
+		// 	{
+		// 		lobbies[i].time=seconds;
+		// 		if(seconds<=1&&lobbies[i].state)
+		// 		{	
+		// 			if(lobbies[i].adminId===socket.id)
+		// 			{	
+
+		// 				socketio.sockets.in(socket.room).emit('gameFinish');
+		// 				if(lobbies[i].usersInGame.length===1)
+		// 				{
+		// 					//socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What" + lobbies[i].usersInGame[0].userId+ "Drew!");
+		// 					socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What Everyone Drew!");
+		// 				}
+		// 				else
+		// 				{
+		// 					socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What Everyone Drew!");
+		// 				}
+		// 				lobbies[i].state=null;
+		// 			}
+		// 		}
+		// 	}
+		// }
 
 	});
 
-	socket.on('finishedDrawing',function(img){
-		console.log('finished drawing');
-		socket.image=img;
-		var curLobby=getLobby(socket.room);
-		for(var i=0;i<curLobby.usersInGame.length;i++)
+socket.on('finishedDrawing',function(img){
+	console.log('finished drawing');
+	socket.image=img;
+	var curLobby=getLobby(socket.room);
+	for(var i=0;i<curLobby.usersInGame.length;i++)
+	{
+		if(curLobby.usersInGame[i].userId===socket.id)
 		{
-			if(curLobby.usersInGame[i].userId===socket.id)
-			{
-				curLobby.usersInGame[i].image=socket.image;
-			}
-			
+			curLobby.usersInGame[i].image=socket.image;
 		}
-		socketio.sockets.in(socket.room).emit('updateRoom',curLobby);
-		socketio.sockets.in(socket.room).emit('drawingsSubmitted');
 
-	});
+	}
+	socketio.sockets.in(socket.room).emit('updateRoom',curLobby);
+	socketio.sockets.in(socket.room).emit('drawingsSubmitted');
 
-	socket.on('prepDisplay',function(drawingNumber){
-		var curLobby=getLobby(socket.room);
-		if(drawingNumber===curLobby.usersInGame.length){
+});
 
-			socket.emit('displayImages');
+socket.on('prepDisplay',function(drawingNumber){
+	var curLobby=getLobby(socket.room);
+	if(drawingNumber===curLobby.usersInGame.length){
+
+		socket.emit('displayImages');
 
 			//alert('DISPLAY ALL IMAGES WE READY');
 		}
 	});
 
-	socket.on('getLobbyTime',function(){
-		socketio.sockets.in(socket.room).emit('setClientTime',getLobby(socket.room).time);
-	});
+
+socket.on('updateUser',function(curUser){
+	socket.user=curUser;
+});
+
+socket.on('updateChat',function(msg){
+	socketio.sockets.in(socket.room).emit('chatMessage',msg);
+});
+
+socket.on('sendChat',function(msg){
+	socketio.sockets.in(socket.room).emit('chatMessage',socket.user.name+': '+msg);
+});
 
 
-	socket.on('updateUser',function(curUser){
-		socket.user=curUser;
-	});
-
-	socket.on('updateChat',function(msg){
-		socketio.sockets.in(socket.room).emit('chatMessage',msg);
-	});
-
-	socket.on('sendChat',function(msg){
-		socketio.sockets.in(socket.room).emit('chatMessage',socket.user.name+': '+msg);
-	});
-
-
-	socket.on('disconnect', function() {
-		console.log("Total Users on Server: "+(--numUsers));
-		socketio.sockets.emit('userCountChange',numUsers);
-		if(socket.room)
+socket.on('disconnect', function() {
+	console.log("Total Users on Server: "+(--numUsers));
+	socketio.sockets.emit('userCountChange',numUsers);
+	if(socket.room)
+	{
+		var curLobby=getLobby(socket.room);
+		socket.prevRoom=socket.room;
+		var users=curLobby.users;
+		var usersInRoom=0;
+		var usersInGame=0;
+		var isCurUser=false;
+		for(var i=0;i<users.length;i++)
 		{
-			var curLobby=getLobby(socket.room);
-			socket.prevRoom=socket.room;
-			var users=curLobby.users;
-			var usersInRoom=0;
-			var usersInGame=0;
-			var isCurUser=false;
-			for(var i=0;i<users.length;i++)
+			if(users[i].status===2)
 			{
-				if(users[i].status===2)
+				usersInGame++;
+				if(users[i].userId===socket.id)
 				{
-					usersInGame++;
-					if(users[i].userId===socket.id)
-					{
-						isCurUser=true;
-					}
+					isCurUser=true;
 				}
-				usersInRoom++;		
 			}
+			usersInRoom++;		
+		}
 
-			if(usersInRoom===1)
-			{	
-				socket.toDelete=true;
-			}
-			if(isCurUser)
+		if(usersInRoom===1)
+		{	
+			socket.toDelete=true;
+		}
+		if(isCurUser)
+		{
+			if(usersInGame===1)
 			{
-				if(usersInGame===1)
+
+				for(var i=0;i<lobbies.length;i++)
 				{
-
-					for(var i=0;i<lobbies.length;i++)
+					if(socket.room===lobbies[i].name)
 					{
-						if(socket.room===lobbies[i].name)
-						{
 
-							socket.state=null;
-							lobbies[i].state=null;
-							socketio.sockets.in(socket.room).emit('resetRoom');
-						}
+						socket.state=null;
+						lobbies[i].state=null;
+						socketio.sockets.in(socket.room).emit('resetRoom');
 					}
 				}
 			}
 		}
-		updateLobby(socket);
-		socket.leave(socket.room);
-		if(socket.user)
-		{
-			socketio.sockets.in(socket.room).emit('chatMessage',socket.user.name+' has Disconnected');
-		}
-		socket.room=null;
-	});
+	}
+	updateLobby(socket);
+	socket.leave(socket.room);
+	if(socket.user)
+	{
+		socketio.sockets.in(socket.room).emit('chatMessage',socket.user.name+' has Disconnected');
+	}
+	socket.room=null;
+});
 
 });
 
