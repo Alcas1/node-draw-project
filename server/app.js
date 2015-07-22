@@ -21,7 +21,7 @@ var app = express();
 var server = require('http').createServer(app);
 var socketio = require('socket.io')(server, {
 	'pingInterval':1000,
-	'pingTimeout':1000,
+	'pingTimeout':10000,
 	serveClient: (config.env === 'production') ? false : true,
 	path: '/socket.io-client'
 });
@@ -358,7 +358,6 @@ socketio.on('connection', function(socket) {
 			socketio.sockets.in(socket.room).emit('setClientTime',localTime);
 			console.log(localTime);
 			if(localTime-10<=0){
-				console.log('omfg lol');
 				clearInterval(localTimer);
 				setTimeout(function(){
 					socketio.sockets.in(socket.room).emit('setClientTime',0);
