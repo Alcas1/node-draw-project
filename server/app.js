@@ -20,7 +20,7 @@ if(config.seedDB) { require('./config/seed'); }
 var app = express();
 var server = require('http').createServer(app);
 var socketio = require('socket.io')(server, {
-	'pingInterval':1000,
+	'pingInterval':5000,
 	'pingTimeout':10000,
 	serveClient: (config.env === 'production') ? false : true,
 	path: '/socket.io-client'
