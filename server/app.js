@@ -25,7 +25,7 @@ var socketio = require('socket.io')(server, {
 	serveClient: (config.env === 'production') ? false : true,
 	path: '/socket.io-client'
 });
-
+//socketio.set('transports', ['xhr-polling']);
 require('./config/socketio')(socketio);
 require('./config/express')(app);
 require('./routes')(app);
@@ -364,7 +364,7 @@ socketio.on('connection', function(socket) {
 					socketio.sockets.in(socket.room).emit('gameFinish');
 					socketio.sockets.in(socket.room).emit('chatMessage',"Let's See What Everyone Drew!");
 					//lobbies[i].state=null;
-				}, seconds*1000);
+				}, localTime*1000);
 
 			}
 		}
