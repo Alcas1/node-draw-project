@@ -275,6 +275,9 @@ canvas{
 	font-size:20px;
 	top:5px;
 	right:15px;
+	-moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 @media(min-width: 330px){
 	canvas#draw{
