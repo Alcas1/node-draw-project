@@ -21,11 +21,13 @@ div(ng-include='"components/rightbar/rightbar.html"')
 			|{{Ready}}
 		.player1(ng-show='state===2&&usersInGame.length===1' ng-class='playerActive1')
 			#draw-game
-				canvas#canvas11.canv
+				#canvasContainer
+					canvas#canvas11.canv
 		.player2(ng-show='state===2&&usersInGame.length===2' ng-class='playerActive2')
 			#draw-game
-				canvas#canvas21.canv
-				canvas#canvas22.canv
+				#canvasContainer
+					canvas#canvas21.canv
+					canvas#canvas22.canv
 		.player3(ng-show='state===2&&usersInGame.length===3' ng-class='playerActive3')
 			#draw-game
 				canvas#canvas31.canv

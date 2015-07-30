@@ -324,8 +324,8 @@ canvas{
 	}
 	#canvas22{
 		position: absolute;
-		left:50%;
-		width: 50%;
+		width: 65vmin;
+		height: 65vmin;
 		/*height: 100%;*/
 	}
 	#canvas31{
