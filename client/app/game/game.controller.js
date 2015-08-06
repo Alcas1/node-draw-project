@@ -53,7 +53,13 @@ angular.module('nodedrawApp')
    updateCanvasSize($scope.playerStatus);
  });
 
-
+  $(function() {
+    $("html, body, *").mousewheel(function(event, delta) {
+        this.scrollLeft -= (delta * 80);
+        this.scrollRight -= (delta * 80);
+        event.preventDefault();
+    });
+});
 
   function updateCanvasSize(status){
     if(status===2)
@@ -351,7 +357,7 @@ $scope.$on('$destroy', function (event) {
 $scope.playerReady=function(){
   if($scope.Ready==='Start')
   {
-    var gameTimeLimit=45;
+    var gameTimeLimit=10;
     socketio.emit('setGameTime',gameTimeLimit);
     localTime=gameTimeLimit;
     $scope.timeLeft=localTime;
