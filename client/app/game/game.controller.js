@@ -26,7 +26,7 @@ angular.module('nodedrawApp')
   var clickDrag = new Array();
   var clickColor = new Array();
   var paint;
-
+  
 
   $scope.switchColor=function(colorHex,item){
     $scope.selectedIndex = item;
@@ -270,7 +270,7 @@ angular.module('nodedrawApp')
     {
 
       var img=new Image();
-      var canvasName=("canvas"+$scope.usersInGame.length)+(i+1);
+      var canvasName=("canvas")+(i+1);
       //$('#'+canvasName).height
       var c1 = document.getElementById(canvasName);
       c1.width  = window.innerHeight-200;
@@ -282,11 +282,16 @@ angular.module('nodedrawApp')
       ctxArray=shuffle(ctxArray);
       img.onload = (function (nr) {
         return function(){
-          console.log(img);
-          img.src=curLobby.usersInGame[nr].image;
           ctxArray[nr].drawImage(img,0,0);
+          if($scope.usersInGame.length-1===nr)
+          {
+            return;
+          }
+          console.log(nr);
+          img.src=curLobby.usersInGame[nr].image;
         }
       }(i));
+
       img.src=curLobby.usersInGame[i].image;
     }
 
